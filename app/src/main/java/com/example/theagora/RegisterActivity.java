@@ -124,7 +124,7 @@ public class RegisterActivity extends AppCompatActivity {
             handler.post(() -> {
                 if (finalResult) {
                     Toast.makeText(RegisterActivity.this, "Registration successful", Toast.LENGTH_SHORT).show();
-
+                    Intent i = new Intent(this, MainPageActivity.class);
                 } else {
                     Toast.makeText(RegisterActivity.this, "Registration failed", Toast.LENGTH_SHORT).show();
                 }

@@ -45,7 +45,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         android:fontFamily="@font/montserrat_bold"
         android:text="First Name:"
         android:textColor="@android:color/white"
@@ -261,18 +261,16 @@
         android:id="@+id/login_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:fontFamily="@font/montserrat_bold"
         android:onClick="launchLogin"
         android:text="Log In here"
         android:textColor="@android:color/white"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/already_have_account"
-        app:layout_constraintVertical_bias="0.032" />
-
+        app:layout_constraintEnd_toEndOf="@+id/already_have_account"
+        app:layout_constraintStart_toStartOf="@+id/already_have_account"
+        app:layout_constraintTop_toBottomOf="@+id/already_have_account"
+        app:layout_constraintVertical_bias="0.0" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
