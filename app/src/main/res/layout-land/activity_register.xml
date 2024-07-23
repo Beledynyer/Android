@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".RegisterActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Heading -->
+        <TextView
+            android:id="@+id/heading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:fontFamily="@font/montserrat_bold"
+            android:text="Register"
+            android:textColor="@android:color/white"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            android:layout_gravity="center_horizontal" />
+
+        <View
+            android:id="@+id/heading_underline"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:layout_marginTop="8dp"
+            android:background="@android:color/white" />
+
+        <!-- First Name Label -->
+        <TextView
+            android:id="@+id/first_name_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/montserrat_bold"
+            android:text="First Name:"
+            android:textColor="@android:color/white"
+            android:textSize="24sp" />
+
+        <EditText
+            android:id="@+id/name_EditText"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/white_box"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:padding="10dp" />
+
+        <TextView
+            android:id="@+id/surname_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/montserrat_bold"
+            android:text="Surname:"
+            android:textColor="@android:color/white"
+            android:textSize="24sp" />
+
+        <EditText
+            android:id="@+id/surname_EditText"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/white_box"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:padding="10dp" />
+
+        <TextView
+            android:id="@+id/email_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/montserrat_bold"
+            android:text="Email:"
+            android:textColor="@android:color/white"
+            android:textSize="24sp" />
+
+        <EditText
+            android:id="@+id/email_EditText"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/white_box"
+            android:ems="10"
+            android:inputType="textEmailAddress"
+            android:padding="10dp" />
+
+        <TextView
+            android:id="@+id/phone_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/montserrat_bold"
+            android:text="Phone Number:"
+            android:textColor="@android:color/white"
+            android:textSize="24sp" />
+
+        <EditText
+            android:id="@+id/phoneNumber_EditText"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/white_box"
+            android:ems="10"
+            android:inputType="phone"
+            android:padding="10dp" />
+
+        <TextView
+            android:id="@+id/password_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/montserrat_bold"
+            android:text="Password:"
+            android:textColor="@android:color/white"
+            android:textSize="24sp" />
+
+        <EditText
+            android:id="@+id/passwordRegister"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/white_box"
+            android:ems="10"
+            android:inputType="textPassword"
+            android:padding="10dp"
+            android:drawableEnd="@drawable/eye_off"
+            android:drawablePadding="8dp" />
+
+        <TextView
+            android:id="@+id/confirm_password_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/montserrat_bold"
+            android:text="Confirm Password:"
+            android:textColor="@android:color/white"
+            android:textSize="24sp" />
+
+        <EditText
+            android:id="@+id/confirmPassword"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/white_box"
+            android:ems="10"
+            android:inputType="textPassword"
+            android:padding="10dp"
+            android:drawableEnd="@drawable/eye_off"
+            android:drawablePadding="8dp" />
+
+        <Button
+            android:id="@+id/register_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:backgroundTint="@color/nmu_yellow"
+            android:fontFamily="@font/montserrat_bold"
+            android:text="Register"
+            android:textColor="@android:color/black"
+            android:textSize="30sp"
+            android:layout_gravity="center_horizontal" />
+
+        <TextView
+            android:id="@+id/already_have_account"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:fontFamily="@font/montserrat_bold"
+            android:text="Already have an account?"
+            android:textAlignment="center"
+            android:textColor="@color/my_gray"
+            android:textSize="24sp"
+            android:layout_gravity="center_horizontal" />
+
+        <TextView
+            android:id="@+id/login_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat_bold"
+            android:onClick="launchLogin"
+            android:text="Log In here"
+            android:textColor="@android:color/white"
+            android:textSize="24sp"
+            android:layout_gravity="center_horizontal" />
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>
