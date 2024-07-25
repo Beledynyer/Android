@@ -14,7 +14,9 @@ import android.widget.EditText;
 import android.widget.Toast;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -77,7 +79,7 @@ public class RegisterActivity extends AppCompatActivity {
 
             if (passwordStr.equals(confirmPasswordStr)) {
                 boolean isStaffMember = emailStr.charAt(0) == 's';
-                registerUser(firstNameStr, surnameStr, emailStr, passwordStr, phoneNumStr, isStaffMember ? "1" : "0");
+                registerUser(firstNameStr, surnameStr, emailStr, passwordStr, phoneNumStr, isStaffMember);
             } else {
                 Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show();
             }
@@ -100,31 +102,44 @@ public class RegisterActivity extends AppCompatActivity {
         startActivity(i);
     }
 
-    private void registerUser(String firstName, String surname, String email, String password, String phoneNum, String isStaffMember) {
+    private void registerUser(String firstName, String surname, String email, String password, String phoneNum, boolean isStaffMember) {
         executor.execute(() -> {
             boolean result = false;
+            User newUser = null;
             try {
                 ConSql c = new ConSql();
                 Connection connection = c.conclass(); // Use your method to get a SQL Connection
                 String sql = "INSERT INTO User (FName, LName, Email, Password, isStaffMember, PhoneNumber) VALUES (?, ?, ?, ?, ?, ?)";
-                PreparedStatement preparedStatement = connection.prepareStatement(sql);
+                PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
                 preparedStatement.setString(1, firstName);
                 preparedStatement.setString(2, surname);
                 preparedStatement.setString(3, email);
                 preparedStatement.setString(4, password);
-                preparedStatement.setString(5, isStaffMember);
+                preparedStatement.setBoolean(5, isStaffMember);
                 preparedStatement.setString(6, phoneNum);
-                preparedStatement.executeUpdate();
-                result = true;
+                int rowsInserted = preparedStatement.executeUpdate();
+                if (rowsInserted > 0) {
+                    ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+                    if (generatedKeys.next()) {
+                        int userId = generatedKeys.getInt(1);
+                        newUser = new User(userId, firstName, surname, email, password, isStaffMember, phoneNum);
+                    }
+                    result = true;
+                }
+                preparedStatement.close();
+                connection.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
 
             boolean finalResult = result;
+            User finalNewUser = newUser;
             handler.post(() -> {
                 if (finalResult) {
                     Toast.makeText(RegisterActivity.this, "Registration successful", Toast.LENGTH_SHORT).show();
                     Intent i = new Intent(this, MainPageActivity.class);
+                    i.putExtra("user", finalNewUser);
+                    startActivity(i);
                 } else {
                     Toast.makeText(RegisterActivity.this, "Registration failed", Toast.LENGTH_SHORT).show();
                 }

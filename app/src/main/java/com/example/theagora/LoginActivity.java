@@ -1,7 +1,6 @@
 package com.example.theagora;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.HideReturnsTransformationMethod;
@@ -81,8 +80,20 @@ public class LoginActivity extends AppCompatActivity {
                     // Successfully logged in
                     Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show();
 
-                    // Redirect to another activity
+                    // Create User object
+                    User user = new User(
+                            resultSet.getInt("UserID"),
+                            resultSet.getString("FName"),
+                            resultSet.getString("LName"),
+                            resultSet.getString("Email"),
+                            resultSet.getString("Password"),
+                            resultSet.getInt("isStaffMember") == 1,
+                            resultSet.getString("PhoneNumber")
+                    );
+
+                    // Pass User object to MainPageActivity
                     Intent i = new Intent(this, MainPageActivity.class);
+                    i.putExtra("user", user);
                     startActivity(i);
                 } else {
                     // Login failed
@@ -98,6 +109,7 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(this, "Connection failed. Please check your internet connection.", Toast.LENGTH_SHORT).show();
         }
     }
+
     public void registerAccount(View v) {
         Intent i = new Intent(this, RegisterActivity.class);
         startActivity(i);

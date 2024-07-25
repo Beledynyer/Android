@@ -1,8 +1,11 @@
 package com.example.theagora;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.annotation.Nullable;
 
-public class User {
+public class User implements Parcelable {
     private int id;
     private String fName;
     private String lName;
@@ -20,6 +23,28 @@ public class User {
         this.isStaffMember = isStaffMember;
         this.phoneNumber = phoneNumber;
     }
+
+    protected User(Parcel in) {
+        id = in.readInt();
+        fName = in.readString();
+        lName = in.readString();
+        email = in.readString();
+        password = in.readString();
+        isStaffMember = in.readByte() != 0;
+        phoneNumber = in.readString();
+    }
+
+    public static final Creator<User> CREATOR = new Creator<User>() {
+        @Override
+        public User createFromParcel(Parcel in) {
+            return new User(in);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
 
     public int getId() {
         return id;
@@ -81,5 +106,21 @@ public class User {
     public boolean equals(@Nullable Object obj) {
         User u = (User)obj;
         return u.getId() == id;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(id);
+        parcel.writeString(fName);
+        parcel.writeString(lName);
+        parcel.writeString(email);
+        parcel.writeString(password);
+        parcel.writeByte((byte) (isStaffMember ? 1 : 0));
+        parcel.writeString(phoneNumber);
     }
 }
