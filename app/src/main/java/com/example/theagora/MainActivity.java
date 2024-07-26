@@ -8,9 +8,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
-import org.conscrypt.Conscrypt;
-
-import java.security.Security;
 
 public class MainActivity extends AppCompatActivity {
 
