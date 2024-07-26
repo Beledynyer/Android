@@ -8,11 +8,21 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import org.conscrypt.Conscrypt;
+
+import java.security.Security;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Security.insertProviderAt(Conscrypt.newProvider(), 1);
+        try {
+            Security.removeProvider("Conscrypt");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         setContentView(R.layout.activity_main);
         // Set status bar color
         Window window = getWindow();

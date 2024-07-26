@@ -20,9 +20,8 @@
             android:name=".CreateForumPostActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
-            android:exported="false"/>
-
+            android:name=".MainPageActivity"
+            android:exported="false" />
         <activity
             android:name=".RegisterActivity"
             android:exported="false" />
@@ -30,9 +29,8 @@
             android:name=".LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".MainPageActivity"
-            android:exported="true" >
-
+            android:name=".MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
