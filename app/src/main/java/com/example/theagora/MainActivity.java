@@ -17,12 +17,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Security.insertProviderAt(Conscrypt.newProvider(), 1);
-        try {
-            Security.removeProvider("Conscrypt");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         setContentView(R.layout.activity_main);
         // Set status bar color
         Window window = getWindow();
