@@ -5,22 +5,23 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
 
     private EditText passwordEditText;
     private EditText emailEditText;
     private boolean isPasswordVisible = false;
-    Connection connect;
+    private UserService userService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +30,9 @@ public class LoginActivity extends AppCompatActivity {
 
         emailEditText = findViewById(R.id.email_login);
         passwordEditText = findViewById(R.id.passwordUI);
+
+        ConApi conApi = new ConApi();
+        userService = conApi.getUserService();
 
         passwordEditText.setOnTouchListener((v, event) -> {
             final int DRAWABLE_END = 2;
@@ -54,7 +58,7 @@ public class LoginActivity extends AppCompatActivity {
             passwordEditText.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.eye_on, 0);
         }
         isPasswordVisible = !isPasswordVisible;
-        passwordEditText.setSelection(passwordEditText.getText().length()); // Move cursor to end of text
+        passwordEditText.setSelection(passwordEditText.getText().length());
     }
 
     private void loginUser() {
@@ -66,48 +70,31 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        ConSql conSql = new ConSql();
-        connect = conSql.conclass();
-        if (connect != null) {
-            try {
-                String query = "SELECT * FROM [User] WHERE email = ? AND password = ?";
-                PreparedStatement preparedStatement = connect.prepareStatement(query);
-                preparedStatement.setString(1, email);
-                preparedStatement.setString(2, password);
-
-                ResultSet resultSet = preparedStatement.executeQuery();
-                if (resultSet.next()) {
+        Call<User> call = userService.login(email, password);
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if (response.isSuccessful() && response.body() != null) {
                     // Successfully logged in
-                    Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show();
-
-                    // Create User object
-                    User user = new User(
-                            resultSet.getInt("UserID"),
-                            resultSet.getString("FName"),
-                            resultSet.getString("LName"),
-                            resultSet.getString("Email"),
-                            resultSet.getString("Password"),
-                            resultSet.getInt("isStaffMember") == 1,
-                            resultSet.getString("PhoneNumber")
-                    );
+                    Toast.makeText(LoginActivity.this, "Login successful", Toast.LENGTH_SHORT).show();
 
                     // Pass User object to MainPageActivity
-                    Intent i = new Intent(this, MainPageActivity.class);
+                    User user = response.body();
+                    Intent i = new Intent(LoginActivity.this, MainPageActivity.class);
                     i.putExtra("user", user);
                     startActivity(i);
                 } else {
                     // Login failed
-                    Toast.makeText(this, "Invalid email or password", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "Invalid email or password", Toast.LENGTH_SHORT).show();
                 }
-
-                resultSet.close();
-                preparedStatement.close();
-            } catch (Exception e) {
-                Toast.makeText(this, "Database query error: " + e.getMessage(), Toast.LENGTH_LONG).show();
             }
-        } else {
-            Toast.makeText(this, "Connection failed. Please check your internet connection.", Toast.LENGTH_SHORT).show();
-        }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                Toast.makeText(LoginActivity.this, "API call error: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                Log.e("E",t.getMessage());
+            }
+        });
     }
 
     public void registerAccount(View v) {

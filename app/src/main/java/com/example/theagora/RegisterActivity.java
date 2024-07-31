@@ -12,13 +12,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class RegisterActivity extends AppCompatActivity {
     EditText firstName;
@@ -29,8 +26,7 @@ public class RegisterActivity extends AppCompatActivity {
     EditText checkPassword;
     private boolean isPasswordVisible1 = false;
     private boolean isPasswordVisible2 = false;
-    private Executor executor = Executors.newSingleThreadExecutor();
-    private Handler handler = new Handler(Looper.getMainLooper());
+    private UserService userService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +39,9 @@ public class RegisterActivity extends AppCompatActivity {
         phoneNum = findViewById(R.id.phoneNumber_EditText);
         passwordEditText = findViewById(R.id.passwordRegister);
         checkPassword = findViewById(R.id.confirmPassword);
+
+        ConApi conApi = new ConApi();
+        userService = conApi.getUserService();
 
         passwordEditText.setOnTouchListener((v, event) -> {
             final int DRAWABLE_END = 2;
@@ -94,7 +93,7 @@ public class RegisterActivity extends AppCompatActivity {
             editText.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
             editText.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.eye_on, 0);
         }
-        editText.setSelection(editText.getText().length()); // Move cursor to end of text
+        editText.setSelection(editText.getText().length());
     }
 
     public void launchLogin(View v) {
@@ -103,47 +102,24 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void registerUser(String firstName, String surname, String email, String password, String phoneNum, boolean isStaffMember) {
-        executor.execute(() -> {
-            boolean result = false;
-            User newUser = null;
-            try {
-                ConSql c = new ConSql();
-                Connection connection = c.conclass(); // Use your method to get a SQL Connection
-                String sql = "INSERT INTO User (FName, LName, Email, Password, isStaffMember, PhoneNumber) VALUES (?, ?, ?, ?, ?, ?)";
-                PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-                preparedStatement.setString(1, firstName);
-                preparedStatement.setString(2, surname);
-                preparedStatement.setString(3, email);
-                preparedStatement.setString(4, password);
-                preparedStatement.setBoolean(5, isStaffMember);
-                preparedStatement.setString(6, phoneNum);
-                int rowsInserted = preparedStatement.executeUpdate();
-                if (rowsInserted > 0) {
-                    ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
-                    if (generatedKeys.next()) {
-                        int userId = generatedKeys.getInt(1);
-                        newUser = new User(userId, firstName, surname, email, password, isStaffMember, phoneNum);
-                    }
-                    result = true;
-                }
-                preparedStatement.close();
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-
-            boolean finalResult = result;
-            User finalNewUser = newUser;
-            handler.post(() -> {
-                if (finalResult) {
+        User newUser = new User(0, firstName, surname, email, password, isStaffMember, phoneNum);
+        Call<Integer> call = userService.register(newUser);
+        call.enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                if (response.isSuccessful() && response.body() != null) {
                     Toast.makeText(RegisterActivity.this, "Registration successful", Toast.LENGTH_SHORT).show();
-                    Intent i = new Intent(this, MainPageActivity.class);
-                    i.putExtra("user", finalNewUser);
+                    Intent i = new Intent(RegisterActivity.this, MainPageActivity.class);
                     startActivity(i);
                 } else {
                     Toast.makeText(RegisterActivity.this, "Registration failed", Toast.LENGTH_SHORT).show();
                 }
-            });
+            }
+
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+                Toast.makeText(RegisterActivity.this, "API call error: " + t.getMessage(), Toast.LENGTH_LONG).show();
+            }
         });
     }
 }
