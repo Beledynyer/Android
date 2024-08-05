@@ -5,15 +5,31 @@ import android.os.Parcelable;
 
 import androidx.annotation.Nullable;
 
+import com.google.gson.annotations.SerializedName;
+
 public class User implements Parcelable {
+    @SerializedName("userId")
     private int id;
+
+    @SerializedName("fname")
     private String fName;
+
+    @SerializedName("lname")
     private String lName;
+
+    @SerializedName("email")
     private String email;
+
+    @SerializedName("password")
     private String password;
+
+    @SerializedName("isStaffMember")
     private boolean isStaffMember;
+
+    @SerializedName("phoneNumber")
     private String phoneNumber;
 
+    // Constructor
     public User(int id, String fName, String lName, String email, String password, boolean isStaffMember, String phoneNumber) {
         this.id = id;
         this.fName = fName;
@@ -24,6 +40,7 @@ public class User implements Parcelable {
         this.phoneNumber = phoneNumber;
     }
 
+    // Parcelable implementation
     protected User(Parcel in) {
         id = in.readInt();
         fName = in.readString();
@@ -46,6 +63,7 @@ public class User implements Parcelable {
         }
     };
 
+    // Getters and setters
     public int getId() {
         return id;
     }
@@ -102,12 +120,16 @@ public class User implements Parcelable {
         this.phoneNumber = phoneNumber;
     }
 
+    // equals() method
     @Override
     public boolean equals(@Nullable Object obj) {
-        User u = (User)obj;
-        return u.getId() == id;
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        User user = (User) obj;
+        return id == user.id;
     }
 
+    // Parcelable methods
     @Override
     public int describeContents() {
         return 0;

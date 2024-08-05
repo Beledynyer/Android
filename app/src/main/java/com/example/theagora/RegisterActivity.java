@@ -1,10 +1,8 @@
 package com.example.theagora;
 
-import androidx.appcompat.app.AppCompatActivity;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.view.MotionEvent;
@@ -12,6 +10,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -28,6 +28,7 @@ public class RegisterActivity extends AppCompatActivity {
     private boolean isPasswordVisible2 = false;
     private UserService userService;
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,7 +78,7 @@ public class RegisterActivity extends AppCompatActivity {
             String confirmPasswordStr = checkPassword.getText().toString();
 
             if (passwordStr.equals(confirmPasswordStr)) {
-                boolean isStaffMember = emailStr.charAt(0) == 's';
+                boolean isStaffMember = emailStr.charAt(0) != 's';
                 registerUser(firstNameStr, surnameStr, emailStr, passwordStr, phoneNumStr, isStaffMember);
             } else {
                 Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show();
@@ -103,13 +104,15 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void registerUser(String firstName, String surname, String email, String password, String phoneNum, boolean isStaffMember) {
         User newUser = new User(0, firstName, surname, email, password, isStaffMember, phoneNum);
-        Call<Integer> call = userService.register(newUser);
-        call.enqueue(new Callback<Integer>() {
+        Call<User> call = userService.register(newUser);
+        call.enqueue(new Callback<User>() {
             @Override
-            public void onResponse(Call<Integer> call, Response<Integer> response) {
+            public void onResponse(Call<User> call, Response<User> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     Toast.makeText(RegisterActivity.this, "Registration successful", Toast.LENGTH_SHORT).show();
+                    User user = response.body();
                     Intent i = new Intent(RegisterActivity.this, MainPageActivity.class);
+                    i.putExtra("user", user);
                     startActivity(i);
                 } else {
                     Toast.makeText(RegisterActivity.this, "Registration failed", Toast.LENGTH_SHORT).show();
@@ -117,7 +120,7 @@ public class RegisterActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<Integer> call, Throwable t) {
+            public void onFailure(Call<User> call, Throwable t) {
                 Toast.makeText(RegisterActivity.this, "API call error: " + t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });

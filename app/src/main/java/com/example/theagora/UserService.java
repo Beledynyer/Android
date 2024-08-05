@@ -11,5 +11,5 @@ public interface UserService {
     Call<User> login(@Query("email") String email, @Query("password") String password);
 
     @POST("api/User/Register")
-    Call<Integer> register(@Body User user);
+    Call<User> register(@Body User user);
 }

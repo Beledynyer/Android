@@ -1,6 +1,8 @@
 package com.example.theagora;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.HideReturnsTransformationMethod;
@@ -23,6 +25,7 @@ public class LoginActivity extends AppCompatActivity {
     private boolean isPasswordVisible = false;
     private UserService userService;
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
