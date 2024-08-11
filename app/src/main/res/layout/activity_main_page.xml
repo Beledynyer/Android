@@ -111,19 +111,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/user_icon_line" />
 
-    <TextView
-        android:id="@+id/no_posts"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/montserrat_bold"
-        android:text="No posts found"
-        android:textColor="@color/nmu_blue"
-        android:textSize="36sp"
-        app:layout_constraintBottom_toTopOf="@+id/no_results_icon"
-        app:layout_constraintEnd_toEndOf="@+id/no_results_icon"
-        app:layout_constraintStart_toStartOf="@+id/no_results_icon"
-        app:layout_constraintTop_toBottomOf="@+id/user_icon_line"
-        app:layout_constraintVertical_bias="0.911" />
+
 
     <TextView
         android:id="@+id/user_name"
@@ -140,16 +128,16 @@
         app:layout_constraintTop_toBottomOf="@+id/heading"
         app:layout_constraintVertical_bias="0.039" />
 
-    <ImageView
-        android:id="@+id/no_results_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/no_results_icon"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/mRecycleView"
+        android:layout_width="match_parent"
+        android:layout_height="612dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginBottom="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/user_icon_line"
-        app:layout_constraintVertical_bias="0.373" />
+        app:layout_constraintTop_toBottomOf="@+id/user_icon_line" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
