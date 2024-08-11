@@ -37,10 +37,6 @@
 
     <!-- First Name Label -->
 
-    <!-- First Name Input -->
-
-    <!-- Surname Label -->
-
     <TextView
         android:id="@+id/first_name"
         android:layout_width="wrap_content"
@@ -53,6 +49,20 @@
         android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/heading_underline" />
+
+    <TextView
+        android:id="@+id/first_name_star"
+        style="@style/CustomTextViewStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:text="*"
+        app:layout_constraintBottom_toTopOf="@+id/name_EditText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/first_name"
+        app:layout_constraintTop_toBottomOf="@+id/heading"
+        app:layout_constraintVertical_bias="0.428" />
 
     <EditText
         android:id="@+id/name_EditText"
@@ -69,6 +79,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/first_name" />
 
+    <!-- Surname Label -->
+
     <TextView
         android:id="@+id/surname_label"
         android:layout_width="wrap_content"
@@ -82,9 +94,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/name_EditText" />
 
-    <!-- Surname Input -->
-
-    <!-- Email Label -->
+    <TextView
+        android:id="@+id/surname_star"
+        style="@style/CustomTextViewStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:text="*"
+        app:layout_constraintBottom_toTopOf="@+id/surname_EditText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/surname_label"
+        app:layout_constraintTop_toBottomOf="@+id/name_EditText"
+        app:layout_constraintVertical_bias="0.428" />
 
     <EditText
         android:id="@+id/surname_EditText"
@@ -101,6 +123,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/surname_label" />
 
+    <!-- Email Label -->
+
     <TextView
         android:id="@+id/email_label"
         android:layout_width="wrap_content"
@@ -114,9 +138,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/surname_EditText" />
 
-    <!-- Email Input -->
-
-    <!-- Phone Number Label -->
+    <TextView
+        android:id="@+id/email_star"
+        style="@style/CustomTextViewStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:text="*"
+        app:layout_constraintBottom_toTopOf="@+id/email_EditText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/email_label"
+        app:layout_constraintTop_toBottomOf="@+id/surname_EditText"
+        app:layout_constraintVertical_bias="0.428" />
 
     <EditText
         android:id="@+id/email_EditText"
@@ -131,7 +165,9 @@
         android:padding="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/email_label" />
+        app:layout_constraintTop_toBottomOf="@+id/email_label" />
+
+    <!-- Phone Number Label -->
 
     <TextView
         android:id="@+id/phone_label"
@@ -146,7 +182,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/email_EditText" />
 
-    <!-- Phone Number Input -->
+    <TextView
+        android:id="@+id/phone_star"
+        style="@style/CustomTextViewStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:text="*"
+        app:layout_constraintBottom_toTopOf="@+id/phoneNumber_EditText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/phone_label"
+        app:layout_constraintTop_toBottomOf="@+id/email_EditText"
+        app:layout_constraintVertical_bias="0.428" />
+
     <EditText
         android:id="@+id/phoneNumber_EditText"
         android:layout_width="385dp"
@@ -175,6 +224,20 @@
         android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/phoneNumber_EditText" />
+
+    <TextView
+        android:id="@+id/password_star"
+        style="@style/CustomTextViewStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:text="*"
+        app:layout_constraintBottom_toTopOf="@+id/passwordRegister"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/password_label"
+        app:layout_constraintTop_toBottomOf="@+id/phoneNumber_EditText"
+        app:layout_constraintVertical_bias="0.428" />
 
     <!-- Password Input -->
     <EditText
@@ -207,6 +270,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/passwordRegister" />
 
+    <TextView
+        android:id="@+id/confirm_password_star"
+        style="@style/CustomTextViewStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:text="*"
+        app:layout_constraintBottom_toTopOf="@+id/confirmPassword"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/confirm_password_label"
+        app:layout_constraintTop_toBottomOf="@+id/passwordRegister"
+        app:layout_constraintVertical_bias="0.428" />
+
     <!-- Confirm Password Input -->
     <EditText
         android:id="@+id/confirmPassword"
@@ -226,7 +303,6 @@
 
     <!-- Register Button -->
 
-    <!-- Already have an account? -->
     <Button
         android:id="@+id/register_button"
         android:layout_width="184dp"
@@ -272,6 +348,5 @@
         app:layout_constraintStart_toStartOf="@+id/already_have_account"
         app:layout_constraintTop_toBottomOf="@+id/already_have_account"
         app:layout_constraintVertical_bias="0.0" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

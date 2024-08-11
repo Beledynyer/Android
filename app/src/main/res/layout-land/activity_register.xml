@@ -33,15 +33,31 @@
             android:background="@android:color/white" />
 
         <!-- First Name Label -->
-        <TextView
-            android:id="@+id/first_name"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:fontFamily="@font/montserrat_bold"
-            android:text="First Name:"
-            android:textColor="@android:color/white"
-            android:textSize="24sp" />
+            android:orientation="horizontal"
+            android:layout_marginTop="20dp">
+
+            <TextView
+                android:id="@+id/first_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_bold"
+                android:text="First Name:"
+                android:textColor="@android:color/white"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/first_name_star"
+                style="@style/CustomTextViewStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="*"
+                android:textSize="24sp"
+                android:layout_gravity="center_vertical" />
+        </LinearLayout>
 
         <EditText
             android:id="@+id/name_EditText"
@@ -53,15 +69,33 @@
             android:inputType="textPersonName"
             android:padding="10dp" />
 
-        <TextView
-            android:id="@+id/surname_label"
+        <!-- Surname Label -->
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:fontFamily="@font/montserrat_bold"
-            android:text="Surname:"
-            android:textColor="@android:color/white"
-            android:textSize="24sp" />
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp">
+
+            <TextView
+                android:id="@+id/surname_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_bold"
+                android:text="Surname:"
+                android:textColor="@android:color/white"
+                android:textSize="24sp" />
+
+
+            <TextView
+                android:id="@+id/surname_star"
+                style="@style/CustomTextViewStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="*"
+                android:textSize="24sp"
+                android:layout_gravity="center_vertical" />
+        </LinearLayout>
 
         <EditText
             android:id="@+id/surname_EditText"
@@ -73,15 +107,33 @@
             android:inputType="textPersonName"
             android:padding="10dp" />
 
-        <TextView
-            android:id="@+id/email_label"
+        <!-- Email Label -->
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:fontFamily="@font/montserrat_bold"
-            android:text="Email:"
-            android:textColor="@android:color/white"
-            android:textSize="24sp" />
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp">
+
+            <TextView
+                android:id="@+id/email_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_bold"
+                android:text="Email:"
+                android:textColor="@android:color/white"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/email_star"
+                style="@style/CustomTextViewStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="*"
+
+                android:textSize="24sp"
+                android:layout_gravity="center_vertical" />
+        </LinearLayout>
 
         <EditText
             android:id="@+id/email_EditText"
@@ -93,15 +145,32 @@
             android:inputType="textEmailAddress"
             android:padding="10dp" />
 
-        <TextView
-            android:id="@+id/phone_label"
+        <!-- Phone Number Label -->
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:fontFamily="@font/montserrat_bold"
-            android:text="Phone Number:"
-            android:textColor="@android:color/white"
-            android:textSize="24sp" />
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp">
+
+            <TextView
+                android:id="@+id/phone_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_bold"
+                android:text="Phone Number:"
+                android:textColor="@android:color/white"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/phone_star"
+                style="@style/CustomTextViewStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="*"
+                android:textSize="24sp"
+                android:layout_gravity="center_vertical" />
+        </LinearLayout>
 
         <EditText
             android:id="@+id/phoneNumber_EditText"
@@ -113,15 +182,32 @@
             android:inputType="phone"
             android:padding="10dp" />
 
-        <TextView
-            android:id="@+id/password_label"
+        <!-- Password Label -->
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:fontFamily="@font/montserrat_bold"
-            android:text="Password:"
-            android:textColor="@android:color/white"
-            android:textSize="24sp" />
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp">
+
+            <TextView
+                android:id="@+id/password_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_bold"
+                android:text="Password:"
+                android:textColor="@android:color/white"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/password_star"
+                style="@style/CustomTextViewStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="*"
+                android:textSize="24sp"
+                android:layout_gravity="center_vertical" />
+        </LinearLayout>
 
         <EditText
             android:id="@+id/passwordRegister"
@@ -135,15 +221,32 @@
             android:drawableEnd="@drawable/eye_off"
             android:drawablePadding="8dp" />
 
-        <TextView
-            android:id="@+id/confirm_password_label"
+        <!-- Confirm Password Label -->
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:fontFamily="@font/montserrat_bold"
-            android:text="Confirm Password:"
-            android:textColor="@android:color/white"
-            android:textSize="24sp" />
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp">
+
+            <TextView
+                android:id="@+id/confirm_password_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_bold"
+                android:text="Confirm Password:"
+                android:textColor="@android:color/white"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/confirm_password_star"
+                style="@style/CustomTextViewStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="*"
+                android:textSize="24sp"
+                android:layout_gravity="center_vertical" />
+        </LinearLayout>
 
         <EditText
             android:id="@+id/confirmPassword"

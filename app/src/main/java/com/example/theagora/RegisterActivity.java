@@ -9,6 +9,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,15 +19,22 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class RegisterActivity extends AppCompatActivity {
-    EditText firstName;
-    EditText surname;
-    EditText email;
-    EditText phoneNum;
-    EditText passwordEditText;
-    EditText checkPassword;
+    private EditText firstName;
+    private EditText surname;
+    private EditText email;
+    private EditText phoneNum;
+    private EditText passwordEditText;
+    private EditText checkPassword;
     private boolean isPasswordVisible1 = false;
     private boolean isPasswordVisible2 = false;
     private UserService userService;
+
+    private TextView first_name_star;
+    private TextView surname_star;
+    private TextView email_star;
+    private TextView phone_star;
+    private TextView password_star;
+    private TextView confirm_password_star;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -40,6 +48,20 @@ public class RegisterActivity extends AppCompatActivity {
         phoneNum = findViewById(R.id.phoneNumber_EditText);
         passwordEditText = findViewById(R.id.passwordRegister);
         checkPassword = findViewById(R.id.confirmPassword);
+
+        first_name_star = findViewById(R.id.first_name_star);
+        first_name_star.setVisibility(View.GONE);
+        surname_star = findViewById(R.id.surname_star);
+        surname_star.setVisibility(View.GONE);
+        email_star = findViewById(R.id.email_star);
+        email_star.setVisibility(View.GONE);
+        phone_star = findViewById(R.id.phone_star);
+        phone_star.setVisibility(View.GONE);
+        password_star = findViewById(R.id.password_star);
+        password_star.setVisibility(View.GONE);
+        confirm_password_star = findViewById(R.id.confirm_password_star);
+        password_star.setVisibility(View.GONE);
+        confirm_password_star.setVisibility(View.GONE);
 
         ConApi conApi = new ConApi();
         userService = conApi.getUserService();
@@ -77,6 +99,11 @@ public class RegisterActivity extends AppCompatActivity {
             String passwordStr = passwordEditText.getText().toString();
             String confirmPasswordStr = checkPassword.getText().toString();
 
+            if (fieldsAreEmpty()) {
+                Toast.makeText(this, "Please fill in all required fields", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             if (passwordStr.equals(confirmPasswordStr)) {
                 boolean isStaffMember = emailStr.charAt(0) != 's';
                 registerUser(firstNameStr, surnameStr, emailStr, passwordStr, phoneNumStr, isStaffMember);
@@ -84,6 +111,54 @@ public class RegisterActivity extends AppCompatActivity {
                 Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private boolean fieldsAreEmpty() {
+        boolean isEmpty = false;
+
+        if (firstName.getText().toString().trim().isEmpty()) {
+            first_name_star.setVisibility(View.VISIBLE);
+            isEmpty = true;
+        } else {
+            first_name_star.setVisibility(View.GONE);
+        }
+
+        if (surname.getText().toString().trim().isEmpty()) {
+            surname_star.setVisibility(View.VISIBLE);
+            isEmpty = true;
+        } else {
+            surname_star.setVisibility(View.GONE);
+        }
+
+        if (email.getText().toString().trim().isEmpty()) {
+            email_star.setVisibility(View.VISIBLE);
+            isEmpty = true;
+        } else {
+            email_star.setVisibility(View.GONE);
+        }
+
+        if (phoneNum.getText().toString().trim().isEmpty()) {
+            phone_star.setVisibility(View.VISIBLE);
+            isEmpty = true;
+        } else {
+            phone_star.setVisibility(View.GONE);
+        }
+
+        if (passwordEditText.getText().toString().trim().isEmpty()) {
+            password_star.setVisibility(View.VISIBLE);
+            isEmpty = true;
+        } else {
+            password_star.setVisibility(View.GONE);
+        }
+
+        if (checkPassword.getText().toString().trim().isEmpty()) {
+            confirm_password_star.setVisibility(View.VISIBLE);
+            isEmpty = true;
+        } else {
+            confirm_password_star.setVisibility(View.GONE);
+        }
+
+        return isEmpty;
     }
 
     private void togglePasswordVisibility(EditText editText, boolean isPasswordVisible) {

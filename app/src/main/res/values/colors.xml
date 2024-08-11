@@ -7,4 +7,5 @@
     <color name="nmu_yellow">#FFCB1F</color>
     <color name="my_black">#000000</color>
     <color name="my_red">#EF3A5D</color>
+    <color name="error_colour">#dc3545</color>
 </resources>

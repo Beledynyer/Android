@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <style name="CustomTextViewStyle">
+        <item name="android:textColor">#dc3545</item>
+        <item name="android:fontFamily">@font/montserrat_regular</item> <!-- Ensure you have Montserrat font in the res/font directory -->
+        <item name="android:textSize">16sp</item> <!-- 1rem is approximately 16sp -->
+        <item name="android:textStyle">normal</item> <!-- Font weight 400 is normal -->
+        <item name="android:lineSpacingMultiplier">1.5</item>
+        <item name="android:textAlignment">viewStart</item> <!-- Align text to the left -->
+    </style>
+</resources>

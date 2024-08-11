@@ -1,7 +1,6 @@
 package com.example.theagora;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +11,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import retrofit2.Call;
@@ -25,11 +25,19 @@ public class LoginActivity extends AppCompatActivity {
     private boolean isPasswordVisible = false;
     private UserService userService;
 
+    private TextView first_name_star;
+    private TextView password_star;
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
+
+        first_name_star = findViewById(R.id.first_name_star);
+        password_star = findViewById(R.id.password_star);
+        first_name_star.setVisibility(View.GONE); // Hide first name star
+        password_star.setVisibility(View.GONE);   // Hide password star
 
         emailEditText = findViewById(R.id.email_login);
         passwordEditText = findViewById(R.id.passwordUI);
@@ -65,29 +73,25 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void loginUser() {
-        String email = emailEditText.getText().toString().trim();
-        String password = passwordEditText.getText().toString().trim();
-
-        if (email.isEmpty() || password.isEmpty()) {
-            Toast.makeText(this, "Please enter email and password", Toast.LENGTH_SHORT).show();
+        if (fieldsIsEmpty()) {
+            Toast.makeText(this, "Please fill in all required fields", Toast.LENGTH_SHORT).show();
             return;
         }
+
+        String email = emailEditText.getText().toString().trim();
+        String password = passwordEditText.getText().toString().trim();
 
         Call<User> call = userService.login(email, password);
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    // Successfully logged in
                     Toast.makeText(LoginActivity.this, "Login successful", Toast.LENGTH_SHORT).show();
-
-                    // Pass User object to MainPageActivity
                     User user = response.body();
                     Intent i = new Intent(LoginActivity.this, MainPageActivity.class);
                     i.putExtra("user", user);
                     startActivity(i);
                 } else {
-                    // Login failed
                     Toast.makeText(LoginActivity.this, "Invalid email or password", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -95,9 +99,31 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<User> call, Throwable t) {
                 Toast.makeText(LoginActivity.this, "API call error: " + t.getMessage(), Toast.LENGTH_LONG).show();
-                Log.e("E",t.getMessage());
+                Log.e("LoginError", t.getMessage());
             }
         });
+    }
+
+    private boolean fieldsIsEmpty() {
+        boolean isEmpty = false;
+        String email = emailEditText.getText().toString().trim();
+        String password = passwordEditText.getText().toString().trim();
+
+        if (email.isEmpty()) {
+            first_name_star.setVisibility(View.VISIBLE); // Show email star if empty
+            isEmpty = true;
+        } else {
+            first_name_star.setVisibility(View.GONE); // Hide email star if not empty
+        }
+
+        if (password.isEmpty()) {
+            password_star.setVisibility(View.VISIBLE); // Show password star if empty
+            isEmpty = true;
+        } else {
+            password_star.setVisibility(View.GONE); // Hide password star if not empty
+        }
+
+        return isEmpty;
     }
 
     public void registerAccount(View v) {

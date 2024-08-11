@@ -8,8 +8,6 @@
 
     <!-- Heading -->
 
-    <!-- Underline -->
-
     <TextView
         android:id="@+id/heading"
         android:layout_width="wrap_content"
@@ -36,8 +34,6 @@
 
     <!-- Email Label -->
 
-    <!-- Email Input -->
-
     <TextView
         android:id="@+id/email"
         android:layout_width="wrap_content"
@@ -49,6 +45,20 @@
         android:textSize="24sp"
         app:layout_constraintStart_toStartOf="@+id/email_login"
         app:layout_constraintTop_toBottomOf="@+id/heading_underline" />
+
+    <TextView
+        android:id="@+id/first_name_star"
+        style="@style/CustomTextViewStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:text="*"
+        app:layout_constraintBottom_toTopOf="@+id/email_login"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/email"
+        app:layout_constraintTop_toBottomOf="@+id/heading_underline"
+        app:layout_constraintVertical_bias="0.583" />
 
     <EditText
         android:id="@+id/email_login"
@@ -66,8 +76,6 @@
 
     <!-- Password Label -->
 
-    <!-- Password Input -->
-
     <TextView
         android:id="@+id/passwordText"
         android:layout_width="wrap_content"
@@ -80,25 +88,19 @@
         app:layout_constraintStart_toStartOf="@+id/email"
         app:layout_constraintTop_toBottomOf="@+id/email_login" />
 
-    <!-- Eye Icon -->
-
-    <!-- Log In Button -->
-
-    <!-- Register Text -->
-
-    <!-- Slogan Text -->
-
-    <!-- Left Line -->
-
-    <!-- OR Text -->
-
-    <!-- Right Line -->
-
-    <!-- Left Line -->
-
-    <!-- OR Text -->
-
-    <!-- Right Line -->
+    <TextView
+        android:id="@+id/password_star"
+        style="@style/CustomTextViewStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:text="*"
+        app:layout_constraintBottom_toTopOf="@+id/passwordUI"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/passwordText"
+        app:layout_constraintTop_toBottomOf="@+id/email_login"
+        app:layout_constraintVertical_bias="0.285" />
 
     <EditText
         android:id="@+id/passwordUI"
@@ -116,6 +118,7 @@
         app:layout_constraintStart_toStartOf="@+id/email_login"
         app:layout_constraintTop_toBottomOf="@id/passwordText" />
 
+    <!-- Log In Button -->
 
     <Button
         android:id="@+id/logIn_Button"
@@ -177,5 +180,30 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/logIn_Button" />
 
+    <TextView
+        android:id="@+id/or_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Or"
+        android:textColor="@android:color/white"
+        android:textSize="22sp"
+        app:layout_constraintBottom_toTopOf="@+id/login_text"
+        app:layout_constraintEnd_toStartOf="@+id/right_line"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/left_line"
+        app:layout_constraintTop_toBottomOf="@+id/logIn_Button"
+        app:layout_constraintVertical_bias="0.272" />
+
+    <View
+        android:id="@+id/right_line"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginStart="8dp"
+        android:background="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/left_line"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/or_text"
+        app:layout_constraintTop_toTopOf="@+id/left_line"
+        app:layout_constraintVertical_bias="0.753" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
