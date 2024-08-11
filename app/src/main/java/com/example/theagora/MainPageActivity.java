@@ -21,6 +21,9 @@ public class MainPageActivity extends AppCompatActivity {
         assert user != null;
         userNameView.setText(user.getfName() + " " + user.getlName());
 
+        //load all posts :/
+
+
     }
     public void createForumPost(View v){
         Intent i = new Intent(this,CreateForumPostActivity.class);
