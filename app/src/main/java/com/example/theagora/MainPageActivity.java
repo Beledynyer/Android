@@ -8,7 +8,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainPageActivity extends AppCompatActivity {
+
+    //forum posts visible to specific type of user
+    List<ForumPost> posts = new ArrayList<>();
 
     @SuppressLint("SetTextI18n")
     @Override

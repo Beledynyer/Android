@@ -1,8 +1,13 @@
 package com.example.theagora;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
 import java.util.Date;
 
-public class ForumPost {
+public class ForumPost implements Parcelable {
     private int postId;
     private Integer userId;
     private String content;
@@ -24,6 +29,38 @@ public class ForumPost {
         this.tags = tags;
         this.user = user;
     }
+
+    protected ForumPost(Parcel in) {
+        postId = in.readInt();
+        if (in.readByte() == 0) {
+            userId = null;
+        } else {
+            userId = in.readInt();
+        }
+        content = in.readString();
+        if (in.readByte() == 0) {
+            numberOfLikes = null;
+        } else {
+            numberOfLikes = in.readInt();
+        }
+        byte tmpIsApproved = in.readByte();
+        isApproved = tmpIsApproved == 0 ? null : tmpIsApproved == 1;
+        image = in.readString();
+        tags = in.readString();
+        user = in.readParcelable(User.class.getClassLoader());
+    }
+
+    public static final Creator<ForumPost> CREATOR = new Creator<ForumPost>() {
+        @Override
+        public ForumPost createFromParcel(Parcel in) {
+            return new ForumPost(in);
+        }
+
+        @Override
+        public ForumPost[] newArray(int size) {
+            return new ForumPost[size];
+        }
+    };
 
     public User getUser() {
         return user;
@@ -95,5 +132,32 @@ public class ForumPost {
 
     public void setTags(String tags) {
         this.tags = tags;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeInt(postId);
+        if (userId == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeInt(userId);
+        }
+        dest.writeString(content);
+        if (numberOfLikes == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeInt(numberOfLikes);
+        }
+        dest.writeByte((byte) (isApproved == null ? 0 : isApproved ? 1 : 2));
+        dest.writeString(image);
+        dest.writeString(tags);
+        dest.writeParcelable(user, flags);
     }
 }
