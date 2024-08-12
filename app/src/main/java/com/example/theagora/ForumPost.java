@@ -17,8 +17,17 @@ public class ForumPost implements Parcelable {
     private String image;
     private String tags;
     private User user;
+    private String title;
 
-    public ForumPost(int postId, Integer userId, String content, Date dateAndTimeOfCreation, Integer numberOfLikes, Boolean isApproved, String image, String tags,User user) {
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public ForumPost(int postId, Integer userId, String content, Date dateAndTimeOfCreation, Integer numberOfLikes, Boolean isApproved, String image, String tags, User user) {
         this.postId = postId;
         this.userId = userId;
         this.content = content;

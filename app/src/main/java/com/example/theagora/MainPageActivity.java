@@ -1,6 +1,8 @@
 package com.example.theagora;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -13,8 +15,7 @@ import java.util.List;
 
 public class MainPageActivity extends AppCompatActivity {
 
-    //forum posts visible to specific type of user
-    List<ForumPost> posts = new ArrayList<>();
+    ArrayList<ForumPost> forumPosts = new ArrayList<>();
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -27,6 +28,11 @@ public class MainPageActivity extends AppCompatActivity {
         assert user != null;
         userNameView.setText(user.getfName() + " " + user.getlName());
 
+        RecyclerView recyclerView = findViewById(R.id.mRecycleView);
+        setUpForumPosts();
+        ForumPostAdapter adapter = new ForumPostAdapter(this,forumPosts);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         //load all posts :/
 
 
@@ -34,5 +40,10 @@ public class MainPageActivity extends AppCompatActivity {
     public void createForumPost(View v){
         Intent i = new Intent(this,CreateForumPostActivity.class);
         startActivity(i);
+    }
+
+    private void setUpForumPosts(){
+        //get all forum posts for specific user
+
     }
 }
