@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,40 +8,34 @@
     tools:context=".CreateForumPostActivity"
     android:background="@color/white">
 
-    <TextView
-        android:id="@+id/heading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:fontFamily="@font/montserrat_bold"
-        android:text="University Forum"
-        android:textColor="@color/nmu_blue"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <View
-        android:id="@+id/heading_underline"
-        android:layout_width="0dp"
-        android:layout_height="3dp"
-        android:layout_marginTop="4dp"
-        android:background="@color/nmu_blue"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/heading" />
-
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout2"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@color/my_gray"
-        app:layout_constraintTop_toBottomOf="@id/heading_underline"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/heading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:fontFamily="@font/montserrat_bold"
+            android:text="University Forum"
+            android:textColor="@color/nmu_blue"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/heading_underline"
+            android:layout_width="0dp"
+            android:layout_height="3dp"
+            android:layout_marginTop="4dp"
+            android:background="@color/nmu_blue"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/heading" />
 
         <TextView
             android:id="@+id/Create_forumPost_heading"
@@ -53,13 +48,12 @@
             android:textSize="30sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/heading_underline" />
 
         <View
             android:id="@+id/create_underline"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="3dp"
             android:layout_marginTop="8dp"
             android:background="@color/nmu_blue"
@@ -71,13 +65,12 @@
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
             android:fontFamily="@font/montserrat_bold"
             android:text="Title"
             android:textColor="@color/nmu_blue"
             android:textSize="24sp"
-            app:layout_constraintStart_toStartOf="@+id/Create_forumPost_heading"
-            app:layout_constraintTop_toBottomOf="@+id/create_underline" />
+            app:layout_constraintStart_toStartOf="@+id/Content"
+            app:layout_constraintTop_toBottomOf="@id/create_underline" />
 
         <TextView
             android:id="@+id/Title_star"
@@ -90,12 +83,12 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/title"
-            app:layout_constraintTop_toBottomOf="@+id/Create_forumPost_heading"
+            app:layout_constraintTop_toBottomOf="@id/Create_forumPost_heading"
             app:layout_constraintVertical_bias="0.428" />
 
         <EditText
             android:id="@+id/title_editText"
-            android:layout_width="290dp"
+            android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
@@ -106,7 +99,6 @@
             android:inputType="textPersonName"
             android:padding="10dp"
             app:layout_constraintEnd_toEndOf="@id/Create_forumPost_heading"
-            app:layout_constraintHorizontal_bias="0.2"
             app:layout_constraintStart_toStartOf="@id/Create_forumPost_heading"
             app:layout_constraintTop_toBottomOf="@+id/title" />
 
@@ -119,8 +111,8 @@
             android:text="Content"
             android:textColor="@color/nmu_blue"
             android:textSize="24sp"
-            app:layout_constraintStart_toStartOf="@+id/Create_forumPost_heading"
-            app:layout_constraintTop_toBottomOf="@+id/title_editText" />
+            app:layout_constraintStart_toStartOf="@id/Create_forumPost_heading"
+            app:layout_constraintTop_toBottomOf="@id/title_editText" />
 
         <TextView
             android:id="@+id/Content_star"
@@ -133,14 +125,15 @@
             app:layout_constraintTop_toTopOf="@+id/Content" />
 
         <LinearLayout
+            android:id="@+id/linearLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintTop_toBottomOf="@id/Content"
-            app:layout_constraintStart_toStartOf="@id/title_editText"
-            app:layout_constraintEnd_toEndOf="@id/title_editText"
             android:paddingTop="8dp"
-            android:paddingBottom="8dp">
+            android:paddingBottom="8dp"
+            app:layout_constraintEnd_toEndOf="@id/title_editText"
+            app:layout_constraintStart_toStartOf="@id/title_editText"
+            app:layout_constraintTop_toBottomOf="@id/Content">
 
             <ImageView
                 android:id="@+id/imageView"
@@ -153,19 +146,110 @@
             <EditText
                 android:id="@+id/content_editText"
                 android:layout_width="match_parent"
-                android:layout_height="146dp"
+                android:layout_height="100dp"
                 android:background="@drawable/white_box"
                 android:hint="Enter content here"
+                android:inputType="textMultiLine"
                 android:padding="10dp"
-                android:inputType="textMultiLine" />
+                android:gravity="top" />
 
             <View
-                android:id="@+id/addImage_separator"
+                android:id="@+id/separator"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="@color/nmu_blue" />
+
+            <Button
+                android:id="@+id/add_image_button"
                 android:layout_width="match_parent"
                 android:layout_height="72dp"
-                android:background="@color/white" />
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:backgroundTint="@color/nmu_yellow"
+                android:drawableTop="@drawable/add_image"
+                android:fontFamily="@font/montserrat_bold"
+                android:gravity="center"
+                android:onClick="addImage"
+                android:text="Add image"
+                android:textColor="@android:color/black"
+                android:textSize="18sp" />
 
         </LinearLayout>
 
+        <!-- New Tags Section -->
+        <TextView
+            android:id="@+id/tags_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="12dp"
+            android:fontFamily="@font/montserrat_bold"
+            android:text="Tags"
+            android:textColor="@color/nmu_blue"
+            android:textSize="24sp"
+            app:layout_constraintStart_toStartOf="@id/Create_forumPost_heading"
+            app:layout_constraintTop_toBottomOf="@id/linearLayout" />
+
+        <TextView
+            android:id="@+id/Tags_star"
+            style="@style/CustomTextViewStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="*"
+            app:layout_constraintBottom_toTopOf="@+id/tags_editText"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/tags_label"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+
+        <EditText
+            android:id="@+id/tags_editText"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/white_box"
+            android:ems="10"
+            android:hint="Enter tags separated by commas"
+            android:inputType="text"
+            android:padding="10dp"
+            app:layout_constraintEnd_toEndOf="@id/Create_forumPost_heading"
+            app:layout_constraintStart_toStartOf="@id/Create_forumPost_heading"
+            app:layout_constraintTop_toBottomOf="@+id/tags_label" />
+
+        <Button
+            android:id="@+id/submit_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:backgroundTint="@color/nmu_blue"
+            android:fontFamily="@font/montserrat_bold"
+            android:onClick="submitPost"
+            android:text="Submit"
+            android:textColor="@android:color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tags_editText" />
+
+        <!-- Cancel Button -->
+        <Button
+            android:id="@+id/cancel_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:backgroundTint="@color/nmu_blue"
+            android:fontFamily="@font/montserrat_bold"
+            android:onClick="cancelPost"
+            android:text="Cancel"
+            android:textColor="@android:color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/submit_button" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

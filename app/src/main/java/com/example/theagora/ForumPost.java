@@ -1,5 +1,6 @@
 package com.example.theagora;
 
+import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -14,30 +15,10 @@ public class ForumPost implements Parcelable {
     private Date dateAndTimeOfCreation;
     private Integer numberOfLikes;
     private Boolean isApproved;
-    private String image;
+    private byte[] image;
     private String tags;
     private User user;
     private String title;
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public ForumPost(int postId, Integer userId, String content, Date dateAndTimeOfCreation, Integer numberOfLikes, Boolean isApproved, String image, String tags, User user) {
-        this.postId = postId;
-        this.userId = userId;
-        this.content = content;
-        this.dateAndTimeOfCreation = dateAndTimeOfCreation;
-        this.numberOfLikes = numberOfLikes;
-        this.isApproved = isApproved;
-        this.image = image;
-        this.tags = tags;
-        this.user = user;
-    }
 
     protected ForumPost(Parcel in) {
         postId = in.readInt();
@@ -54,9 +35,12 @@ public class ForumPost implements Parcelable {
         }
         byte tmpIsApproved = in.readByte();
         isApproved = tmpIsApproved == 0 ? null : tmpIsApproved == 1;
-        image = in.readString();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            image = in.readBlob();
+        }
         tags = in.readString();
         user = in.readParcelable(User.class.getClassLoader());
+        title = in.readString();
     }
 
     public static final Creator<ForumPost> CREATOR = new Creator<ForumPost>() {
@@ -70,6 +54,38 @@ public class ForumPost implements Parcelable {
             return new ForumPost[size];
         }
     };
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public ForumPost(int postId, Integer userId, String content, Date dateAndTimeOfCreation, Integer numberOfLikes, Boolean isApproved, byte[] image, String tags, User user) {
+        this.postId = postId;
+        this.userId = userId;
+        this.content = content;
+        this.dateAndTimeOfCreation = dateAndTimeOfCreation;
+        this.numberOfLikes = numberOfLikes;
+        this.isApproved = isApproved;
+        this.image = image;
+        this.tags = tags;
+        this.user = user;
+    }
+
+
+    public ForumPost(Integer userId, String content, Integer numberOfLikes, byte[] image, String tags, String title) {
+        this.isApproved = true;
+        this.userId = userId;
+        this.content = content;
+        this.dateAndTimeOfCreation = new Date();
+        this.numberOfLikes = numberOfLikes;
+        this.image = image;
+        this.tags = tags;
+        this.title = title;
+    }
 
     public User getUser() {
         return user;
@@ -127,11 +143,11 @@ public class ForumPost implements Parcelable {
         isApproved = approved;
     }
 
-    public String getImage() {
+    public byte[] getImage() {
         return image;
     }
 
-    public void setImage(String image) {
+    public void setImage(byte[] image) {
         this.image = image;
     }
 
@@ -150,6 +166,7 @@ public class ForumPost implements Parcelable {
 
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
+
         dest.writeInt(postId);
         if (userId == null) {
             dest.writeByte((byte) 0);
@@ -165,8 +182,13 @@ public class ForumPost implements Parcelable {
             dest.writeInt(numberOfLikes);
         }
         dest.writeByte((byte) (isApproved == null ? 0 : isApproved ? 1 : 2));
-        dest.writeString(image);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            dest.writeBlob(image);
+        }
         dest.writeString(tags);
         dest.writeParcelable(user, flags);
+        dest.writeString(title);
     }
+
+
 }

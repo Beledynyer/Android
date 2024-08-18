@@ -15,14 +15,14 @@ import java.util.ArrayList;
 public class MainPageActivity extends AppCompatActivity {
 
     ArrayList<ForumPost> forumPosts = new ArrayList<>();
-
+    User user;
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_page);
 
-        User user = getIntent().getParcelableExtra("user");
+        user = getIntent().getParcelableExtra("user");
         TextView userNameView = findViewById(R.id.user_name);
         assert user != null;
         userNameView.setText(user.getfName() + " " + user.getlName());
@@ -38,6 +38,7 @@ public class MainPageActivity extends AppCompatActivity {
     }
     public void createForumPost(View v){
         Intent i = new Intent(this,CreateForumPostActivity.class);
+        i.putExtra("user",user);
         startActivity(i);
     }
 

@@ -90,7 +90,7 @@ public class RegisterActivity extends AppCompatActivity {
             return false;
         });
 
-        Button b = findViewById(R.id.register_button);
+        Button b = findViewById(R.id.cancel_btn);
         b.setOnClickListener(v -> {
             String firstNameStr = firstName.getText().toString();
             String surnameStr = surname.getText().toString();
