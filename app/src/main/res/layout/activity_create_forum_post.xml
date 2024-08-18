@@ -4,6 +4,168 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CreateForumPostActivity">
+    tools:context=".CreateForumPostActivity"
+    android:background="@color/white">
 
+    <TextView
+        android:id="@+id/heading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:fontFamily="@font/montserrat_bold"
+        android:text="University Forum"
+        android:textColor="@color/nmu_blue"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/heading_underline"
+        android:layout_width="0dp"
+        android:layout_height="3dp"
+        android:layout_marginTop="4dp"
+        android:background="@color/nmu_blue"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/heading" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/my_gray"
+        app:layout_constraintTop_toBottomOf="@id/heading_underline"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:id="@+id/Create_forumPost_heading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:fontFamily="@font/montserrat_bold"
+            android:text="Create Forum Post"
+            android:textColor="@color/nmu_blue"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/create_underline"
+            android:layout_width="wrap_content"
+            android:layout_height="3dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/nmu_blue"
+            app:layout_constraintEnd_toEndOf="@id/Create_forumPost_heading"
+            app:layout_constraintStart_toStartOf="@id/Create_forumPost_heading"
+            app:layout_constraintTop_toBottomOf="@id/Create_forumPost_heading" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:fontFamily="@font/montserrat_bold"
+            android:text="Title"
+            android:textColor="@color/nmu_blue"
+            android:textSize="24sp"
+            app:layout_constraintStart_toStartOf="@+id/Create_forumPost_heading"
+            app:layout_constraintTop_toBottomOf="@+id/create_underline" />
+
+        <TextView
+            android:id="@+id/Title_star"
+            style="@style/CustomTextViewStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="*"
+            app:layout_constraintBottom_toTopOf="@+id/title_editText"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/title"
+            app:layout_constraintTop_toBottomOf="@+id/Create_forumPost_heading"
+            app:layout_constraintVertical_bias="0.428" />
+
+        <EditText
+            android:id="@+id/title_editText"
+            android:layout_width="290dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/white_box"
+            android:ems="10"
+            android:hint="Enter title here"
+            android:inputType="textPersonName"
+            android:padding="10dp"
+            app:layout_constraintEnd_toEndOf="@id/Create_forumPost_heading"
+            app:layout_constraintHorizontal_bias="0.2"
+            app:layout_constraintStart_toStartOf="@id/Create_forumPost_heading"
+            app:layout_constraintTop_toBottomOf="@+id/title" />
+
+        <TextView
+            android:id="@+id/Content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/montserrat_bold"
+            android:text="Content"
+            android:textColor="@color/nmu_blue"
+            android:textSize="24sp"
+            app:layout_constraintStart_toStartOf="@+id/Create_forumPost_heading"
+            app:layout_constraintTop_toBottomOf="@+id/title_editText" />
+
+        <TextView
+            android:id="@+id/Content_star"
+            style="@style/CustomTextViewStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="*"
+            app:layout_constraintStart_toEndOf="@+id/Content"
+            app:layout_constraintTop_toTopOf="@+id/Content" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@id/Content"
+            app:layout_constraintStart_toStartOf="@id/title_editText"
+            app:layout_constraintEnd_toEndOf="@id/title_editText"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp">
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="match_parent"
+                android:layout_height="230dp"
+                android:layout_marginBottom="8dp"
+                android:visibility="gone"
+                app:srcCompat="@drawable/ic_launcher_background" />
+
+            <EditText
+                android:id="@+id/content_editText"
+                android:layout_width="match_parent"
+                android:layout_height="146dp"
+                android:background="@drawable/white_box"
+                android:hint="Enter content here"
+                android:padding="10dp"
+                android:inputType="textMultiLine" />
+
+            <View
+                android:id="@+id/addImage_separator"
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:background="@color/white" />
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -11,4 +11,5 @@ public class CreateForumPostActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_forum_post);
     }
+
 }
