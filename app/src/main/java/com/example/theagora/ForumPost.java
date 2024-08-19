@@ -76,7 +76,8 @@ public class ForumPost implements Parcelable {
     }
 
 
-    public ForumPost(Integer userId, String content, Integer numberOfLikes, byte[] image, String tags, String title) {
+    public ForumPost(User user,Integer userId, String content, Integer numberOfLikes, byte[] image, String tags, String title) {
+        this.user = user;
         this.isApproved = true;
         this.userId = userId;
         this.content = content;

@@ -27,6 +27,8 @@ public class CreateForumPostActivity extends AppCompatActivity {
     TextView tagsStar;
     ImageView im;
     private static final int REQUEST_PERMISSIONS_CODE = 100;
+    User user;
+    byte[] imageByteArray;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,17 +51,12 @@ public class CreateForumPostActivity extends AppCompatActivity {
         tagsStar.setVisibility(View.GONE);
 
         // Convert the image to byte array, handle null image case
-        byte[] imageByteArray = convertImageViewToByteArray(im);
+        imageByteArray = convertImageViewToByteArray(im);
 
-        String title = ((EditText) findViewById(R.id.title_editText)).getText().toString();
-        String content = ((EditText) findViewById(R.id.content_editText)).getText().toString();
-        String tags = ((EditText) findViewById(R.id.tags_editText)).getText().toString();
 
-       /* Intent userIntent = getIntent();
-        User user = userIntent.getParcelableExtra("user");
+        Intent userIntent = getIntent();
+        user = userIntent.getParcelableExtra("user");
 
-        // Create ForumPost object with imageByteArray; assuming it handles null values properly
-        ForumPost post = new ForumPost(user.getId(), content, 0, imageByteArray, tags, title);*/
     }
 
     // Method to convert ImageView to byte array
@@ -122,5 +119,25 @@ public class CreateForumPostActivity extends AppCompatActivity {
                 // Permission denied
             }
         }
+    }
+    public void submitPost(View v) {
+        String title = ((EditText) findViewById(R.id.title_editText)).getText().toString();
+        String content = ((EditText) findViewById(R.id.content_editText)).getText().toString();
+        String tags = ((EditText) findViewById(R.id.tags_editText)).getText().toString();
+
+        // Create ForumPost object
+        ForumPost post = new ForumPost(user, user.getId(), content, 0, imageByteArray, tags, title);
+
+        // Prepare intent to send result back
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra("newPost", post);
+        setResult(RESULT_OK, resultIntent);
+
+        // Finish the activity
+        finish();
+    }
+
+    public void cancelPost(View v){
+        finish();
     }
 }

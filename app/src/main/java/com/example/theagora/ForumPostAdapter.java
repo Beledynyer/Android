@@ -55,4 +55,9 @@ public class ForumPostAdapter extends RecyclerView.Adapter<ForumPostAdapter.MyVi
             tags = itemView.findViewById(R.id.tags_view);
         }
     }
+
+    public  void add(ForumPost p){
+        forumPosts.add(p);
+        notifyItemChanged(forumPosts.size()-1);
+    }
 }

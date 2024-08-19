@@ -134,10 +134,11 @@
         android:layout_height="612dp"
         android:layout_marginTop="1dp"
         android:layout_marginBottom="1dp"
+        android:background="@color/nmu_blue"
+        android:clipToPadding="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/user_icon_line" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
