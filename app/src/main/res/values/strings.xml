@@ -2,4 +2,11 @@
     <string name="app_name">TheAgora</string>
     <string name="headingText">University Forum</string>
     <string name="background_image">Background Image</string>
+    <string-array name="tags_array">
+        <item>Academics</item>
+        <item>Anonymous</item>
+        <item>Funny</item>
+        <item>Hobbies</item>
+        <item>Philosophy</item>
+    </string-array>
 </resources>

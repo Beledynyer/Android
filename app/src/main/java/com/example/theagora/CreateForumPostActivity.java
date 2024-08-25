@@ -10,8 +10,10 @@ import android.graphics.drawable.VectorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,6 +28,7 @@ public class CreateForumPostActivity extends AppCompatActivity {
     TextView contextStar;
     TextView tagsStar;
     ImageView im;
+    Spinner tagsSpinner;
     private static final int REQUEST_PERMISSIONS_CODE = 100;
     User user;
     byte[] imageByteArray;
@@ -40,6 +43,12 @@ public class CreateForumPostActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_PERMISSIONS_CODE);
         }
 
+        tagsSpinner = findViewById(R.id.tags_spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.tags_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        tagsSpinner.setAdapter(adapter);
         titleStar = findViewById(R.id.Title_star);
         contextStar = findViewById(R.id.Content_star);
         tagsStar = findViewById(R.id.Tags_star);
@@ -123,7 +132,7 @@ public class CreateForumPostActivity extends AppCompatActivity {
     public void submitPost(View v) {
         String title = ((EditText) findViewById(R.id.title_editText)).getText().toString();
         String content = ((EditText) findViewById(R.id.content_editText)).getText().toString();
-        String tags = ((EditText) findViewById(R.id.tags_editText)).getText().toString();
+        String tags = tagsSpinner.getSelectedItem().toString(); // Get selected tag from Spinner
 
         // Create ForumPost object
         ForumPost post = new ForumPost(user, user.getId(), content, 0, imageByteArray, tags, title);

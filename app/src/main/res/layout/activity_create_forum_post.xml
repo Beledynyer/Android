@@ -197,23 +197,19 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:text="*"
-            app:layout_constraintBottom_toTopOf="@+id/tags_editText"
+            app:layout_constraintBottom_toTopOf="@+id/tags_spinner"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/tags_label"
             app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
-        <EditText
-            android:id="@+id/tags_editText"
+        <Spinner
+            android:id="@+id/tags_spinner"
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:background="@drawable/white_box"
-            android:ems="10"
-            android:hint="Enter tags separated by commas"
-            android:inputType="text"
-            android:padding="10dp"
             app:layout_constraintEnd_toEndOf="@id/Create_forumPost_heading"
             app:layout_constraintStart_toStartOf="@id/Create_forumPost_heading"
             app:layout_constraintTop_toBottomOf="@+id/tags_label" />
@@ -232,7 +228,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tags_editText" />
+            app:layout_constraintTop_toBottomOf="@id/tags_spinner" />
 
         <!-- Cancel Button -->
         <Button
