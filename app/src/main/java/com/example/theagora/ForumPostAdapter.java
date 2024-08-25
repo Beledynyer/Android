@@ -21,7 +21,6 @@ public class ForumPostAdapter extends RecyclerView.Adapter<ForumPostAdapter.MyVi
         this.context = context;
         this.forumPosts = forumPosts;
     }
-
     @NonNull
     @Override
     public ForumPostAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -130,20 +131,44 @@ public class CreateForumPostActivity extends AppCompatActivity {
         }
     }
     public void submitPost(View v) {
-        String title = ((EditText) findViewById(R.id.title_editText)).getText().toString();
-        String content = ((EditText) findViewById(R.id.content_editText)).getText().toString();
-        String tags = tagsSpinner.getSelectedItem().toString(); // Get selected tag from Spinner
+        String title = ((EditText) findViewById(R.id.title_editText)).getText().toString().trim();
+        String content = ((EditText) findViewById(R.id.content_editText)).getText().toString().trim();
+        String tags = tagsSpinner.getSelectedItem().toString().trim();
 
-        // Create ForumPost object
-        ForumPost post = new ForumPost(user, user.getId(), content, 0, imageByteArray, tags, title);
+        boolean isValid = true;
 
-        // Prepare intent to send result back
-        Intent resultIntent = new Intent();
-        resultIntent.putExtra("newPost", post);
-        setResult(RESULT_OK, resultIntent);
+        // Check if title is empty
+        if (title.isEmpty()) {
+            titleStar.setVisibility(View.VISIBLE);
+            isValid = false;
+        } else {
+            titleStar.setVisibility(View.GONE);
+        }
 
-        // Finish the activity
-        finish();
+        // Check if content is empty
+        if (content.isEmpty()) {
+            contextStar.setVisibility(View.VISIBLE);
+            isValid = false;
+        } else {
+            contextStar.setVisibility(View.GONE);
+        }
+
+        // If all fields are valid, create the ForumPost object and proceed
+        if (isValid) {
+            // Create ForumPost object
+            ForumPost post = new ForumPost(user, user.getId(), content, 0, imageByteArray, tags, title);
+
+            // Prepare intent to send result back
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("newPost", post);
+            setResult(RESULT_OK, resultIntent);
+
+            // Finish the activity
+            finish();
+        } else {
+            // Show a Toast message if fields are not filled
+            Toast.makeText(this, "Please fill in all the required fields", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void cancelPost(View v){

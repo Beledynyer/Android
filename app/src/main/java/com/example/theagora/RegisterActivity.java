@@ -63,8 +63,7 @@ public class RegisterActivity extends AppCompatActivity {
         password_star.setVisibility(View.GONE);
         confirm_password_star.setVisibility(View.GONE);
 
-        ConApi conApi = new ConApi();
-        userService = conApi.getUserService();
+        userService = RetrofitClientInstance.getRetrofitInstance().create(UserService.class);
 
         passwordEditText.setOnTouchListener((v, event) -> {
             final int DRAWABLE_END = 2;

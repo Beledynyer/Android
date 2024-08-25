@@ -42,8 +42,7 @@ public class LoginActivity extends AppCompatActivity {
         emailEditText = findViewById(R.id.email_login);
         passwordEditText = findViewById(R.id.passwordUI);
 
-        ConApi conApi = new ConApi();
-        userService = conApi.getUserService();
+        userService = RetrofitClientInstance.getRetrofitInstance().create(UserService.class);
 
         passwordEditText.setOnTouchListener((v, event) -> {
             final int DRAWABLE_END = 2;
