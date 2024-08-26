@@ -1,11 +1,13 @@
 package com.example.theagora;
 
-import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Base64;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import java.util.Arrays;
 import java.util.Date;
 
 public class ForumPost implements Parcelable {
@@ -15,7 +17,7 @@ public class ForumPost implements Parcelable {
     private Date dateAndTimeOfCreation;
     private Integer numberOfLikes;
     private Boolean isApproved;
-    private byte[] image;
+    private String image;
     private String tags;
     private User user;
     private String title;
@@ -35,9 +37,7 @@ public class ForumPost implements Parcelable {
         }
         byte tmpIsApproved = in.readByte();
         isApproved = tmpIsApproved == 0 ? null : tmpIsApproved == 1;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            image = in.readBlob();
-        }
+        image = in.readString();
         tags = in.readString();
         user = in.readParcelable(User.class.getClassLoader());
         title = in.readString();
@@ -63,16 +63,17 @@ public class ForumPost implements Parcelable {
         this.title = title;
     }
 
-    public ForumPost(int postId, Integer userId, String content, Date dateAndTimeOfCreation, Integer numberOfLikes, Boolean isApproved, byte[] image, String tags, User user) {
+    public ForumPost(int postId, Integer userId, String content, Integer numberOfLikes, Boolean isApproved, byte[] image, String tags,String title) {
+        this.title = title;
         this.postId = postId;
         this.userId = userId;
         this.content = content;
-        this.dateAndTimeOfCreation = dateAndTimeOfCreation;
+        this.dateAndTimeOfCreation = new Date();
         this.numberOfLikes = numberOfLikes;
         this.isApproved = isApproved;
-        this.image = image;
+        this.image = Base64.encodeToString(image, Base64.DEFAULT); // Convert byte array to base64 string
+        Log.d("IMAGEIMAGEIMAGE", "ForumPost: " + Arrays.toString(image));
         this.tags = tags;
-        this.user = user;
     }
 
 
@@ -83,7 +84,7 @@ public class ForumPost implements Parcelable {
         this.content = content;
         this.dateAndTimeOfCreation = new Date();
         this.numberOfLikes = numberOfLikes;
-        this.image = image;
+        this.image = Base64.encodeToString(image, Base64.NO_WRAP); // Convert byte array to base64 string
         this.tags = tags;
         this.title = title;
     }
@@ -144,11 +145,11 @@ public class ForumPost implements Parcelable {
         isApproved = approved;
     }
 
-    public byte[] getImage() {
+    public String getImage() {
         return image;
     }
 
-    public void setImage(byte[] image) {
+    public void setImage(String image) {
         this.image = image;
     }
 
@@ -183,13 +184,9 @@ public class ForumPost implements Parcelable {
             dest.writeInt(numberOfLikes);
         }
         dest.writeByte((byte) (isApproved == null ? 0 : isApproved ? 1 : 2));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            dest.writeBlob(image);
-        }
+        dest.writeString(image);
         dest.writeString(tags);
         dest.writeParcelable(user, flags);
         dest.writeString(title);
     }
-
-
 }

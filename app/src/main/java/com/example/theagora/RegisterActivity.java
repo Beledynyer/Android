@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -13,6 +14,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.gson.Gson;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -89,7 +92,7 @@ public class RegisterActivity extends AppCompatActivity {
             return false;
         });
 
-        Button b = findViewById(R.id.cancel_btn);
+        Button b = findViewById(R.id.regiter_btn);
         b.setOnClickListener(v -> {
             String firstNameStr = firstName.getText().toString();
             String surnameStr = surname.getText().toString();
@@ -178,6 +181,11 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void registerUser(String firstName, String surname, String email, String password, String phoneNum, boolean isStaffMember) {
         User newUser = new User(0, firstName, surname, email, password, isStaffMember, phoneNum);
+
+        Gson gson = new Gson();
+        String jsonPayload = gson.toJson(newUser);
+        Log.d("ASDFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF", "Request JSON: " + jsonPayload);
+
         Call<User> call = userService.register(newUser);
         call.enqueue(new Callback<User>() {
             @Override

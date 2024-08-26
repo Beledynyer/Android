@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -70,8 +71,9 @@ public class MainPageActivity extends AppCompatActivity {
         // Make the API call to get all forum posts
         Call<List<ForumPost>> call = forumPostService.getForumPosts();
         call.enqueue(new Callback<List<ForumPost>>() {
+            @SuppressLint("NotifyDataSetChanged")
             @Override
-            public void onResponse(Call<List<ForumPost>> call, Response<List<ForumPost>> response) {
+            public void onResponse(@NonNull Call<List<ForumPost>> call, @NonNull Response<List<ForumPost>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     // Clear the existing list and add the new posts
                     forumPosts.clear();

@@ -9,6 +9,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.VectorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -17,11 +18,18 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.google.gson.Gson;
+
 import java.io.ByteArrayOutputStream;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class CreateForumPostActivity extends AppCompatActivity {
 
@@ -34,6 +42,7 @@ public class CreateForumPostActivity extends AppCompatActivity {
     User user;
     byte[] imageByteArray;
 
+    private ForumPostService forumPostService;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,27 +69,28 @@ public class CreateForumPostActivity extends AppCompatActivity {
         contextStar.setVisibility(View.GONE);
         tagsStar.setVisibility(View.GONE);
 
-        // Convert the image to byte array, handle null image case
-        imageByteArray = convertImageViewToByteArray(im);
-
-
         Intent userIntent = getIntent();
         user = userIntent.getParcelableExtra("user");
 
+        forumPostService = RetrofitClientInstance.getRetrofitInstance().create(ForumPostService.class);
+
     }
 
-    // Method to convert ImageView to byte array
+    private static final int MAX_IMAGE_WIDTH = 800; // Max width for the image
+    private static final int MAX_IMAGE_HEIGHT = 800; // Max height for the image
+    private static final int COMPRESS_QUALITY = 70; // Quality of the compressed image
+
+    // Method to convert ImageView to byte array with resizing and compression
     private byte[] convertImageViewToByteArray(ImageView imageView) {
         if (imageView.getDrawable() != null) {
+            Bitmap bitmap;
+
             if (imageView.getDrawable() instanceof BitmapDrawable) {
-                Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                return stream.toByteArray();
+                bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
             } else if (imageView.getDrawable() instanceof VectorDrawable) {
                 // Convert VectorDrawable to Bitmap
                 VectorDrawable vectorDrawable = (VectorDrawable) imageView.getDrawable();
-                Bitmap bitmap = Bitmap.createBitmap(
+                bitmap = Bitmap.createBitmap(
                         vectorDrawable.getIntrinsicWidth(),
                         vectorDrawable.getIntrinsicHeight(),
                         Bitmap.Config.ARGB_8888
@@ -88,18 +98,43 @@ public class CreateForumPostActivity extends AppCompatActivity {
                 Canvas canvas = new Canvas(bitmap);
                 vectorDrawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
                 vectorDrawable.draw(canvas);
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                return stream.toByteArray();
             } else {
                 // Handle other drawable types or return an empty array
                 return new byte[0];
             }
+
+            // Resize the bitmap to 1x1 pixel
+            Bitmap smallBitmap = Bitmap.createScaledBitmap(bitmap, 1, 1, true);
+
+            // Compress the bitmap to reduce file size
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            smallBitmap.compress(Bitmap.CompressFormat.JPEG, 10, stream); // Set very low quality
+            return stream.toByteArray();
         } else {
             // Return an empty array or handle the case where image is null
             return new byte[0];
         }
     }
+
+    // Method to resize the bitmap
+    private Bitmap resizeBitmap(Bitmap originalBitmap, int maxWidth, int maxHeight) {
+        int width = originalBitmap.getWidth();
+        int height = originalBitmap.getHeight();
+        float aspectRatio = (float) width / height;
+
+        if (width > maxWidth) {
+            width = maxWidth;
+            height = Math.round(width / aspectRatio);
+        }
+
+        if (height > maxHeight) {
+            height = maxHeight;
+            width = Math.round(height * aspectRatio);
+        }
+
+        return Bitmap.createScaledBitmap(originalBitmap, width, height, true);
+    }
+
 
 
     public void addImage(View v) {
@@ -117,10 +152,11 @@ public class CreateForumPostActivity extends AppCompatActivity {
             Uri imageUri = data.getData();
             im.setVisibility(View.VISIBLE);
             im.setImageURI(imageUri); // Set the image to ImageView
+            imageByteArray = convertImageViewToByteArray(im);
         }
     }
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_PERMISSIONS_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -153,20 +189,35 @@ public class CreateForumPostActivity extends AppCompatActivity {
             contextStar.setVisibility(View.GONE);
         }
 
-        // If all fields are valid, create the ForumPost object and proceed
         if (isValid) {
             // Create ForumPost object
-            ForumPost post = new ForumPost(user, user.getId(), content, 0, imageByteArray, tags, title);
+            ForumPost post = new ForumPost(0,user.getId(),content,0,true,imageByteArray,tags,title);
 
-            // Prepare intent to send result back
-            Intent resultIntent = new Intent();
-            resultIntent.putExtra("newPost", post);
-            setResult(RESULT_OK, resultIntent);
+            // Convert ForumPost object to JSON string using Gson
+            Gson gson = new Gson();
+            String jsonPayload = gson.toJson(post);
+            Log.d("RetrofitRequest", "Request JSON: " + jsonPayload);
 
-            // Finish the activity
-            finish();
+            // Make the API call to create the post
+            Call<ForumPost> call = forumPostService.createForumPost(post);
+            call.enqueue(new Callback<ForumPost>() {
+                @Override
+                public void onResponse(Call<ForumPost> call, Response<ForumPost> response) {
+                    if (response.isSuccessful()) {
+                        Toast.makeText(CreateForumPostActivity.this, "Post created successfully!", Toast.LENGTH_SHORT).show();
+                        // Finish the activity
+                        finish();
+                    } else {
+                        Toast.makeText(CreateForumPostActivity.this, "Failed to create post.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ForumPost> call, Throwable t) {
+                    Toast.makeText(CreateForumPostActivity.this, "An error occurred: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
         } else {
-            // Show a Toast message if fields are not filled
             Toast.makeText(this, "Please fill in all the required fields", Toast.LENGTH_SHORT).show();
         }
     }
