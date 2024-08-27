@@ -12,4 +12,7 @@ public interface UserService {
 
     @POST("api/User/Register")
     Call<User> register(@Body User user);
+
+    @GET("api/User/GetUserById")
+    Call<User> getUserById(@Query("id") int id);
 }

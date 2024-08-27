@@ -65,31 +65,47 @@ public class MainPageActivity extends AppCompatActivity {
     }
 
     private void setUpForumPosts() {
-        // Get an instance of ForumPostService
         ForumPostService forumPostService = RetrofitClientInstance.getRetrofitInstance().create(ForumPostService.class);
+        UserService userService = RetrofitClientInstance.getRetrofitInstance().create(UserService.class);
 
-        // Make the API call to get all forum posts
         Call<List<ForumPost>> call = forumPostService.getForumPosts();
         call.enqueue(new Callback<List<ForumPost>>() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onResponse(@NonNull Call<List<ForumPost>> call, @NonNull Response<List<ForumPost>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    // Clear the existing list and add the new posts
                     forumPosts.clear();
                     forumPosts.addAll(response.body());
-                    adapter.notifyDataSetChanged();
+
+                    // Fetch user details for each forum post
+                    for (ForumPost post : forumPosts) {
+                        int userId = post.getUserId();
+                        Call<User> userCall = userService.getUserById(userId);
+                        userCall.enqueue(new Callback<User>() {
+                            @Override
+                            public void onResponse(@NonNull Call<User> call, @NonNull Response<User> userResponse) {
+                                if (userResponse.isSuccessful() && userResponse.body() != null) {
+                                    post.setUser(userResponse.body());
+                                }
+                                adapter.notifyDataSetChanged(); // Update the adapter after setting the user
+                            }
+
+                            @Override
+                            public void onFailure(Call<User> call, Throwable t) {
+                                Log.e("MainPageActivity", "Failed to load user details", t);
+                            }
+                        });
+                    }
                 } else {
-                    // Handle the case where the response is not successful
                     Log.e("MainPageActivity", "Failed to load forum posts. Response code: " + response.code());
                 }
             }
 
             @Override
             public void onFailure(Call<List<ForumPost>> call, Throwable t) {
-                // Handle the failure case, such as network errors
                 Log.e("MainPageActivity", "Failed to load forum posts", t);
             }
         });
     }
+
 }
