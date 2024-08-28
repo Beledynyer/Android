@@ -73,7 +73,7 @@ public class MainPageActivity extends AppCompatActivity {
             @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onResponse(@NonNull Call<List<ForumPost>> call, @NonNull Response<List<ForumPost>> response) {
-                if (response.isSuccessful() && response.body() != null) {
+                if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
                     forumPosts.clear();
                     forumPosts.addAll(response.body());
 
@@ -97,7 +97,9 @@ public class MainPageActivity extends AppCompatActivity {
                         });
                     }
                 } else {
-                    Log.e("MainPageActivity", "Failed to load forum posts. Response code: " + response.code());
+                    // Handle the case where there are no forum posts
+                    Log.e("MainPageActivity", "No forum posts available.");
+                    // You can also update the UI here to show a "No posts available" message
                 }
             }
 
@@ -107,5 +109,6 @@ public class MainPageActivity extends AppCompatActivity {
             }
         });
     }
+
 
 }
