@@ -1,5 +1,6 @@
 package com.example.theagora;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,10 +30,16 @@ public class ForumPostAdapter extends RecyclerView.Adapter<ForumPostAdapter.MyVi
         return new ForumPostAdapter.MyViewHolder(view);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ForumPostAdapter.MyViewHolder holder, int position) {
-        String fullUserName = forumPosts.get(position).getUser().getfName() + " " + forumPosts.get(position).getUser().getlName();
-        holder.name.setText(fullUserName);
+        ForumPost forumPost = forumPosts.get(position);
+        User user = forumPost.getUser();
+        if (user != null) {
+            holder.name.setText(user.getfName() + " " + user.getlName());
+        } else {
+            holder.name.setText("Unknown User");
+        }
         holder.title.setText(forumPosts.get(position).getTitle());
         holder.tags.setText(forumPosts.get(position).getTags());
     }

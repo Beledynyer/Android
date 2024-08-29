@@ -205,7 +205,9 @@ public class CreateForumPostActivity extends AppCompatActivity {
                 public void onResponse(Call<ForumPost> call, Response<ForumPost> response) {
                     if (response.isSuccessful()) {
                         Toast.makeText(CreateForumPostActivity.this, "Post created successfully!", Toast.LENGTH_SHORT).show();
-                        // Finish the activity
+                        Intent intent = new Intent();
+                        intent.putExtra("newPost", post);
+                        setResult(RESULT_OK, intent);
                         finish();
                     } else {
                         Toast.makeText(CreateForumPostActivity.this, "Failed to create post.", Toast.LENGTH_SHORT).show();

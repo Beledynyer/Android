@@ -59,7 +59,22 @@ public class MainPageActivity extends AppCompatActivity {
         if (requestCode == 1 && resultCode == RESULT_OK && data != null) {
             ForumPost newPost = data.getParcelableExtra("newPost");
             if (newPost != null) {
-                adapter.add(newPost);
+                int userId = newPost.getUserId();
+                UserService userService = RetrofitClientInstance.getRetrofitInstance().create(UserService.class);
+                Call<User> userCall = userService.getUserById(userId);
+                userCall.enqueue(new Callback<User>() {
+                    @Override
+                    public void onResponse(@NonNull Call<User> call, @NonNull Response<User> userResponse) {
+                        if (userResponse.isSuccessful() && userResponse.body() != null) {
+                            newPost.setUser(userResponse.body());
+                        }
+                        adapter.add(newPost);
+                    }
+                    @Override
+                    public void onFailure(Call<User> call, Throwable t) {
+                        Log.e("MainPageActivity", "Failed to load user details", t);
+                    }
+                });
             }
         }
     }
@@ -78,16 +93,19 @@ public class MainPageActivity extends AppCompatActivity {
                     forumPosts.addAll(response.body());
 
                     // Fetch user details for each forum post
-                    for (ForumPost post : forumPosts) {
-                        int userId = post.getUserId();
+                    for (int i = 0; i < forumPosts.size(); i++) {
+                        int userId = forumPosts.get(i).getUserId();
+                        int finalI = i;
                         Call<User> userCall = userService.getUserById(userId);
                         userCall.enqueue(new Callback<User>() {
                             @Override
                             public void onResponse(@NonNull Call<User> call, @NonNull Response<User> userResponse) {
                                 if (userResponse.isSuccessful() && userResponse.body() != null) {
-                                    post.setUser(userResponse.body());
+                                    forumPosts.get(finalI).setUser(userResponse.body());
                                 }
-                                adapter.notifyDataSetChanged(); // Update the adapter after setting the user
+                                if (finalI == forumPosts.size() - 1) {
+                                    adapter.notifyDataSetChanged(); // Update the adapter after all users are set
+                                }
                             }
 
                             @Override
@@ -97,9 +115,7 @@ public class MainPageActivity extends AppCompatActivity {
                         });
                     }
                 } else {
-                    // Handle the case where there are no forum posts
                     Log.e("MainPageActivity", "No forum posts available.");
-                    // You can also update the UI here to show a "No posts available" message
                 }
             }
 
@@ -109,6 +125,7 @@ public class MainPageActivity extends AppCompatActivity {
             }
         });
     }
+
 
 
 }

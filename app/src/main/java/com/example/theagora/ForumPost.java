@@ -7,14 +7,16 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Locale;
 
 public class ForumPost implements Parcelable {
     private int postId;
     private Integer userId;
     private String content;
-    private Date dateAndTimeOfCreation;
+    private String dateAndTimeOfCreation;
     private Integer numberOfLikes;
     private Boolean isApproved;
     private String image;
@@ -22,79 +24,49 @@ public class ForumPost implements Parcelable {
     private User user;
     private String title;
 
-    protected ForumPost(Parcel in) {
-        postId = in.readInt();
-        if (in.readByte() == 0) {
-            userId = null;
-        } else {
-            userId = in.readInt();
-        }
-        content = in.readString();
-        if (in.readByte() == 0) {
-            numberOfLikes = null;
-        } else {
-            numberOfLikes = in.readInt();
-        }
-        byte tmpIsApproved = in.readByte();
-        isApproved = tmpIsApproved == 0 ? null : tmpIsApproved == 1;
-        image = in.readString();
-        tags = in.readString();
-        user = in.readParcelable(User.class.getClassLoader());
-        title = in.readString();
-    }
-
-    public static final Creator<ForumPost> CREATOR = new Creator<ForumPost>() {
-        @Override
-        public ForumPost createFromParcel(Parcel in) {
-            return new ForumPost(in);
-        }
-
-        @Override
-        public ForumPost[] newArray(int size) {
-            return new ForumPost[size];
-        }
-    };
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public ForumPost(int postId, Integer userId, String content, Integer numberOfLikes, Boolean isApproved, byte[] image, String tags,String title) {
-        this.title = title;
+    // Constructor
+    public ForumPost(int postId, Integer userId, String content, Integer numberOfLikes, Boolean isApproved, byte[] image, String tags, String title) {
         this.postId = postId;
         this.userId = userId;
         this.content = content;
-        this.dateAndTimeOfCreation = new Date();
+
+        // Format the current date to the desired format
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
+        this.dateAndTimeOfCreation = dateFormat.format(new Date());
+
         this.numberOfLikes = numberOfLikes;
         this.isApproved = isApproved;
-        this.image = Base64.encodeToString(image, Base64.DEFAULT); // Convert byte array to base64 string
+        //this.image = Base64.encodeToString(image, Base64.DEFAULT); // Convert byte array to base64 string
+        this.image = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/wcAAwAB/TrTKEwAAAAASUVORK5CYII=";
         Log.d("IMAGEIMAGEIMAGE", "ForumPost: " + Arrays.toString(image));
         this.tags = tags;
+        this.title = title;
     }
 
-
-    public ForumPost(User user,Integer userId, String content, Integer numberOfLikes, byte[] image, String tags, String title) {
+    // Additional Constructor
+    public ForumPost(User user, Integer userId, String content, Integer numberOfLikes, byte[] image, String tags, String title) {
         this.user = user;
         this.isApproved = true;
         this.userId = userId;
         this.content = content;
-        this.dateAndTimeOfCreation = new Date();
+
+        // Format the current date to the desired format
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
+        this.dateAndTimeOfCreation = dateFormat.format(new Date());
+
         this.numberOfLikes = numberOfLikes;
         this.image = Base64.encodeToString(image, Base64.NO_WRAP); // Convert byte array to base64 string
         this.tags = tags;
         this.title = title;
     }
 
-    public User getUser() {
-        return user;
+    // Getters and Setters
+    public String getTitle() {
+        return title;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public int getPostId() {
@@ -121,11 +93,11 @@ public class ForumPost implements Parcelable {
         this.content = content;
     }
 
-    public Date getDateAndTimeOfCreation() {
+    public String getDateAndTimeOfCreation() {
         return dateAndTimeOfCreation;
     }
 
-    public void setDateAndTimeOfCreation(Date dateAndTimeOfCreation) {
+    public void setDateAndTimeOfCreation(String dateAndTimeOfCreation) {
         this.dateAndTimeOfCreation = dateAndTimeOfCreation;
     }
 
@@ -161,6 +133,49 @@ public class ForumPost implements Parcelable {
         this.tags = tags;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    // Parcelable implementation
+    protected ForumPost(Parcel in) {
+        postId = in.readInt();
+        if (in.readByte() == 0) {
+            userId = null;
+        } else {
+            userId = in.readInt();
+        }
+        content = in.readString();
+        dateAndTimeOfCreation = in.readString();
+        if (in.readByte() == 0) {
+            numberOfLikes = null;
+        } else {
+            numberOfLikes = in.readInt();
+        }
+        byte tmpIsApproved = in.readByte();
+        isApproved = tmpIsApproved == 0 ? null : tmpIsApproved == 1;
+        image = in.readString();
+        tags = in.readString();
+        user = in.readParcelable(User.class.getClassLoader());
+        title = in.readString();
+    }
+
+    public static final Creator<ForumPost> CREATOR = new Creator<ForumPost>() {
+        @Override
+        public ForumPost createFromParcel(Parcel in) {
+            return new ForumPost(in);
+        }
+
+        @Override
+        public ForumPost[] newArray(int size) {
+            return new ForumPost[size];
+        }
+    };
+
     @Override
     public int describeContents() {
         return 0;
@@ -168,7 +183,6 @@ public class ForumPost implements Parcelable {
 
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
-
         dest.writeInt(postId);
         if (userId == null) {
             dest.writeByte((byte) 0);
@@ -177,6 +191,7 @@ public class ForumPost implements Parcelable {
             dest.writeInt(userId);
         }
         dest.writeString(content);
+        dest.writeString(dateAndTimeOfCreation);
         if (numberOfLikes == null) {
             dest.writeByte((byte) 0);
         } else {

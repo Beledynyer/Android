@@ -131,9 +131,8 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/mRecycleView"
         android:layout_width="match_parent"
-        android:layout_height="568dp"
+        android:layout_height="550dp"
         android:layout_marginTop="1dp"
-        android:layout_marginBottom="1dp"
         android:background="@color/nmu_blue"
         android:clipToPadding="false"
         app:layout_constraintBottom_toBottomOf="parent"
