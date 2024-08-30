@@ -184,7 +184,7 @@
             android:layout_marginStart="12dp"
             android:layout_marginTop="16dp"
             android:fontFamily="@font/montserrat_bold"
-            android:text="Tag"
+            android:text="Tags"
             android:textColor="@color/nmu_blue"
             android:textSize="24sp"
             app:layout_constraintStart_toStartOf="@id/Create_forumPost_heading"

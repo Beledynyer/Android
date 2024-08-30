@@ -36,7 +36,9 @@ public class ForumPostAdapter extends RecyclerView.Adapter<ForumPostAdapter.MyVi
         ForumPost forumPost = forumPosts.get(position);
         User user = forumPost.getUser();
         if (user != null) {
-            holder.name.setText(user.getfName() + " " + user.getlName());
+            if(!forumPost.getTags().equals("Anonymous")){
+                holder.name.setText(user.getfName() + " " + user.getlName());
+            }
         } else {
             holder.name.setText("Unknown User");
         }
