@@ -1,10 +1,12 @@
 package com.example.theagora;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -30,7 +32,7 @@ public class ForumPostAdapter extends RecyclerView.Adapter<ForumPostAdapter.MyVi
     public ForumPostAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.recycler_view_row,parent,false);
-        return new ForumPostAdapter.MyViewHolder(view);
+        return new ForumPostAdapter.MyViewHolder(view,forumPosts,this);
     }
 
     @SuppressLint("SetTextI18n")
@@ -56,11 +58,12 @@ public class ForumPostAdapter extends RecyclerView.Adapter<ForumPostAdapter.MyVi
         return forumPosts.size();
     }
 
-    public static class MyViewHolder extends RecyclerView.ViewHolder{
+    public static class MyViewHolder extends RecyclerView.ViewHolder {
 
-        TextView name,title,tags;
+        TextView name, title, tags;
         ImageView bin;
-        public MyViewHolder(@NonNull View itemView) {
+
+        public MyViewHolder(@NonNull View itemView, ArrayList<ForumPost> forumPosts, ForumPostAdapter adapter) {
             super(itemView);
 
             name = itemView.findViewById(R.id.forum_post_username);
@@ -68,11 +71,45 @@ public class ForumPostAdapter extends RecyclerView.Adapter<ForumPostAdapter.MyVi
             tags = itemView.findViewById(R.id.tags_view);
             bin = itemView.findViewById(R.id.bin_icon);
 
-            bin.setOnClickListener(view ->{
+            bin.setOnClickListener(view -> {
+                String postTitle = title.getText().toString();
 
+                // Inflate the custom layout
+                LayoutInflater inflater = LayoutInflater.from(itemView.getContext());
+                View dialogView = inflater.inflate(R.layout.dialog_buttons, null);
+
+                // Create the AlertDialog and set the custom view
+                AlertDialog dialog = new AlertDialog.Builder(itemView.getContext())
+                        .setTitle("Confirm delete")
+                        .setMessage("Are you sure you want to delete the post titled: \"" + postTitle + "\"?")
+                        .setView(dialogView)
+                        .create();
+
+                // Get references to the buttons in the custom layout
+                Button btnCancel = dialogView.findViewById(R.id.btn_cancel);
+                Button btnDelete = dialogView.findViewById(R.id.btn_delete);
+
+                // Set click listeners for the buttons
+                btnCancel.setOnClickListener(v -> dialog.dismiss());
+
+                btnDelete.setOnClickListener(v -> {
+                    // Perform the delete action
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        forumPosts.remove(position);
+                       adapter.notifyItemRemoved(position);
+                        // Optionally, delete the post from the database or API here
+                    }
+                    dialog.dismiss();
+                });
+
+                // Show the dialog
+                dialog.show();
             });
+
         }
     }
+
 
     public  void add(ForumPost p){
         forumPosts.add(p);

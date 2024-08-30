@@ -1,0 +1,4 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/my_gray" />
+    <corners android:radius="25dp" /> <!-- This will give it an oval shape -->
+</shape>
