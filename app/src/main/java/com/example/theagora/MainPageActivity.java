@@ -93,7 +93,10 @@ public class MainPageActivity extends AppCompatActivity {
                     forumPosts.addAll(response.body());
 
                     // Fetch user details for each forum post
-                    for (int i = 0; i < forumPosts.size(); i++) {
+                    int totalPosts = forumPosts.size();
+                    final int[] loadedPosts = {0};  // track the number of posts that have their users loaded
+
+                    for (int i = 0; i < totalPosts; i++) {
                         int userId = forumPosts.get(i).getUserId();
                         int finalI = i;
                         Call<User> userCall = userService.getUserById(userId);
@@ -103,14 +106,19 @@ public class MainPageActivity extends AppCompatActivity {
                                 if (userResponse.isSuccessful() && userResponse.body() != null) {
                                     forumPosts.get(finalI).setUser(userResponse.body());
                                 }
-                                if (finalI == forumPosts.size() - 1) {
-                                    adapter.notifyDataSetChanged(); // Update the adapter after all users are set
+                                loadedPosts[0]++;
+                                if (loadedPosts[0] == totalPosts) {
+                                    adapter.notifyDataSetChanged();  // Update the adapter after all users are set
                                 }
                             }
 
                             @Override
                             public void onFailure(Call<User> call, Throwable t) {
                                 Log.e("MainPageActivity", "Failed to load user details", t);
+                                loadedPosts[0]++;
+                                if (loadedPosts[0] == totalPosts) {
+                                    adapter.notifyDataSetChanged();  // Update the adapter after all users are set
+                                }
                             }
                         });
                     }
@@ -125,7 +133,4 @@ public class MainPageActivity extends AppCompatActivity {
             }
         });
     }
-
-
-
 }
