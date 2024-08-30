@@ -57,6 +57,20 @@
                 app:layout_constraintStart_toEndOf="@+id/forum_post_usericon"
                 app:layout_constraintTop_toTopOf="@+id/forum_post_usericon" />
 
+            <ImageView
+                android:id="@+id/bin_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="50dp"
+                android:contentDescription="Bin Icon"
+                android:visibility="gone"
+                android:src="@drawable/bin"
+                app:layout_constraintBottom_toBottomOf="@+id/title_view"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/title_view" />
+
             <TextView
                 android:id="@+id/title_label"
                 android:layout_width="wrap_content"
@@ -69,6 +83,8 @@
                 app:layout_constraintBottom_toTopOf="@+id/tags_view"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/forum_post_usericon" />
+
+
 
             <TextView
                 android:id="@+id/title_view"

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,11 +17,13 @@ public class ForumPostAdapter extends RecyclerView.Adapter<ForumPostAdapter.MyVi
 
     Context context;
 
+    User user;
     ArrayList<ForumPost> forumPosts;
 
-    public ForumPostAdapter(Context context,ArrayList<ForumPost> forumPosts){
+    public ForumPostAdapter(Context context,ArrayList<ForumPost> forumPosts,User user){
         this.context = context;
         this.forumPosts = forumPosts;
+        this.user =user;
     }
     @NonNull
     @Override
@@ -34,16 +37,18 @@ public class ForumPostAdapter extends RecyclerView.Adapter<ForumPostAdapter.MyVi
     @Override
     public void onBindViewHolder(@NonNull ForumPostAdapter.MyViewHolder holder, int position) {
         ForumPost forumPost = forumPosts.get(position);
-        User user = forumPost.getUser();
-        if (user != null) {
-            if(!forumPost.getTags().equals("Anonymous")){
-                holder.name.setText(user.getfName() + " " + user.getlName());
+        User forumPostUser = forumPost.getUser();
+        if (forumPostUser != null) {
+            if(forumPostUser.getId() == user.getId() || !forumPost.getTags().equals("Anonymous")){
+                holder.name.setText(forumPostUser.getfName() + " " + forumPostUser.getlName());
             }
         } else {
             holder.name.setText("Unknown User");
         }
         holder.title.setText(forumPosts.get(position).getTitle());
         holder.tags.setText(forumPosts.get(position).getTags());
+        assert forumPostUser != null;
+        if(forumPostUser.getId() == user.getId()) holder.bin.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -54,13 +59,18 @@ public class ForumPostAdapter extends RecyclerView.Adapter<ForumPostAdapter.MyVi
     public static class MyViewHolder extends RecyclerView.ViewHolder{
 
         TextView name,title,tags;
-
+        ImageView bin;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
 
             name = itemView.findViewById(R.id.forum_post_username);
             title = itemView.findViewById(R.id.title_view);
             tags = itemView.findViewById(R.id.tags_view);
+            bin = itemView.findViewById(R.id.bin_icon);
+
+            bin.setOnClickListener(view ->{
+
+            });
         }
     }
 

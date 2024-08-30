@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -37,7 +38,7 @@ public class MainPageActivity extends AppCompatActivity {
         userNameView.setText(user.getfName() + " " + user.getlName());
 
         RecyclerView recyclerView = findViewById(R.id.mRecycleView);
-        adapter = new ForumPostAdapter(this, forumPosts);
+        adapter = new ForumPostAdapter(this, forumPosts,user);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
