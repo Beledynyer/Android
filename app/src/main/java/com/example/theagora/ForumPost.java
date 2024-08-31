@@ -8,7 +8,6 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 
