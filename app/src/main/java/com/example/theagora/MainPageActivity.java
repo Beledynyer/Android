@@ -38,7 +38,8 @@ public class MainPageActivity extends AppCompatActivity {
         userNameView.setText(user.getfName() + " " + user.getlName());
 
         RecyclerView recyclerView = findViewById(R.id.mRecycleView);
-        adapter = new ForumPostAdapter(this, forumPosts,user);
+        ForumPostService forumPostService = RetrofitClientInstance.getRetrofitInstance().create(ForumPostService.class);
+        adapter = new ForumPostAdapter(this, forumPosts,user,forumPostService);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 

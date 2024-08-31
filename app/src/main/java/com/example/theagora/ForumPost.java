@@ -25,7 +25,7 @@ public class ForumPost implements Parcelable {
     private String title;
 
     // Constructor
-    public ForumPost(int postId, Integer userId, String content, Integer numberOfLikes, Boolean isApproved, byte[] image, String tags, String title) {
+    public ForumPost(int postId, Integer userId, String content, Integer numberOfLikes, Boolean isApproved, String image, String tags, String title) {
         this.postId = postId;
         this.userId = userId;
         this.content = content;
@@ -36,9 +36,9 @@ public class ForumPost implements Parcelable {
 
         this.numberOfLikes = numberOfLikes;
         this.isApproved = isApproved;
-        //this.image = Base64.encodeToString(image, Base64.DEFAULT); // Convert byte array to base64 string
-        this.image = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/wcAAwAB/TrTKEwAAAAASUVORK5CYII=";
-        Log.d("IMAGEIMAGEIMAGE", "ForumPost: " + Arrays.toString(image));
+        this.image = image;// Convert byte array to base64 string
+        //this.image = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/wcAAwAB/TrTKEwAAAAASUVORK5CYII=";
+        Log.d("IMAGEIMAGEIMAGE", "ForumPost: " + image);
         this.tags = tags;
         this.title = title;
     }

@@ -9,6 +9,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.VectorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -40,7 +41,7 @@ public class CreateForumPostActivity extends AppCompatActivity {
     Spinner tagsSpinner;
     private static final int REQUEST_PERMISSIONS_CODE = 100;
     User user;
-    byte[] imageByteArray;
+    String imageByteArray;
 
     private ForumPostService forumPostService;
     @Override
@@ -81,7 +82,7 @@ public class CreateForumPostActivity extends AppCompatActivity {
     private static final int COMPRESS_QUALITY = 70; // Quality of the compressed image
 
     // Method to convert ImageView to byte array with resizing and compression
-    private byte[] convertImageViewToByteArray(ImageView imageView) {
+    private String convertImageViewToByteArray(ImageView imageView) {
         if (imageView.getDrawable() != null) {
             Bitmap bitmap;
 
@@ -100,7 +101,7 @@ public class CreateForumPostActivity extends AppCompatActivity {
                 vectorDrawable.draw(canvas);
             } else {
                 // Handle other drawable types or return an empty array
-                return new byte[0];
+                return null;
             }
 
             // Resize the bitmap to 1x1 pixel
@@ -109,10 +110,19 @@ public class CreateForumPostActivity extends AppCompatActivity {
             // Compress the bitmap to reduce file size
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             smallBitmap.compress(Bitmap.CompressFormat.JPEG, 10, stream); // Set very low quality
-            return stream.toByteArray();
+
+            // Convert the compressed bitmap to a byte array
+            byte[] byteArray = stream.toByteArray();
+
+            // Encode the byte array to Base64
+            String base64Image = Base64.encodeToString(byteArray, Base64.NO_WRAP);
+            Log.d("Base64Image", base64Image); // Log the Base64 string for debugging
+
+            // Decode Base64 string back to byte array
+            return  base64Image;
         } else {
             // Return an empty array or handle the case where image is null
-            return new byte[0];
+            return null;
         }
     }
 

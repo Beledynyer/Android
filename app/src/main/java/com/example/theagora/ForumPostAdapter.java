@@ -15,6 +15,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class ForumPostAdapter extends RecyclerView.Adapter<ForumPostAdapter.MyViewHolder> {
 
     Context context;
@@ -22,17 +26,20 @@ public class ForumPostAdapter extends RecyclerView.Adapter<ForumPostAdapter.MyVi
     User user;
     ArrayList<ForumPost> forumPosts;
 
-    public ForumPostAdapter(Context context,ArrayList<ForumPost> forumPosts,User user){
+    ForumPostService forumPostService;
+
+    public ForumPostAdapter(Context context,ArrayList<ForumPost> forumPosts,User user,ForumPostService forumPostService){
         this.context = context;
         this.forumPosts = forumPosts;
         this.user =user;
+        this.forumPostService = forumPostService;
     }
     @NonNull
     @Override
     public ForumPostAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.recycler_view_row,parent,false);
-        return new ForumPostAdapter.MyViewHolder(view,forumPosts,this);
+        return new ForumPostAdapter.MyViewHolder(view,forumPosts,this,forumPostService);
     }
 
     @SuppressLint("SetTextI18n")
@@ -63,7 +70,7 @@ public class ForumPostAdapter extends RecyclerView.Adapter<ForumPostAdapter.MyVi
         TextView name, title, tags;
         ImageView bin;
 
-        public MyViewHolder(@NonNull View itemView, ArrayList<ForumPost> forumPosts, ForumPostAdapter adapter) {
+        public MyViewHolder(@NonNull View itemView, ArrayList<ForumPost> forumPosts, ForumPostAdapter adapter,ForumPostService forumPostService) {
             super(itemView);
 
             name = itemView.findViewById(R.id.forum_post_username);
@@ -96,9 +103,28 @@ public class ForumPostAdapter extends RecyclerView.Adapter<ForumPostAdapter.MyVi
                     // Perform the delete action
                     int position = getAdapterPosition();
                     if (position != RecyclerView.NO_POSITION) {
-                        forumPosts.remove(position);
-                       adapter.notifyItemRemoved(position);
-                        // Optionally, delete the post from the database or API here
+                        ForumPost postToDelete = forumPosts.get(position);
+                        int postId = postToDelete.getPostId();
+
+                        // Call API to delete the post from the database
+                        forumPostService.deleteForumPost(postId).enqueue(new Callback<Void>() {
+                            @Override
+                            public void onResponse(Call<Void> call, Response<Void> response) {
+                                if (response.isSuccessful()) {
+                                    // Remove the item from the list and notify the adapter
+                                    forumPosts.remove(position);
+                                    adapter.notifyItemRemoved(position);
+                                } else {
+                                    // Handle the case where the server responds with an error
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<Void> call, Throwable t) {
+                                // Handle the error here (e.g., show a message to the user)
+                            }
+                        });
+
                     }
                     dialog.dismiss();
                 });
