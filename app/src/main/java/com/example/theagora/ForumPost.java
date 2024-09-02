@@ -35,7 +35,12 @@ public class ForumPost implements Parcelable {
 
         this.numberOfLikes = numberOfLikes;
         this.isApproved = isApproved;
-        this.image = image;// Convert byte array to base64 string
+        if(image == null){
+            this.image = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/wcAAwAB/TrTKEwAAAAASUVORK5CYII=";
+        }
+        else{
+            this.image = image;// Convert byte array to base64 string
+        }
         //this.image = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/wcAAwAB/TrTKEwAAAAASUVORK5CYII=";
         Log.d("IMAGEIMAGEIMAGE", "ForumPost: " + image);
         this.tags = tags;
