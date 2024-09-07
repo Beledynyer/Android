@@ -83,6 +83,10 @@ public class ForumPostAdapter extends RecyclerView.Adapter<ForumPostAdapter.MyVi
             tags = itemView.findViewById(R.id.tags_view);
             bin = itemView.findViewById(R.id.bin_icon);
 
+            itemView.setOnClickListener(view ->{
+
+            });
+
             bin.setOnClickListener(view -> {
                 String postTitle = title.getText().toString();
 
