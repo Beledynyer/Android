@@ -106,6 +106,7 @@
         android:layout_height="640dp"
         android:background="@color/nmu_blue"
         android:clipToPadding="false"
+        android:layoutAnimation="@anim/layout_animation"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -6,6 +6,8 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -27,6 +29,7 @@ public class ForumPostAdapter extends RecyclerView.Adapter<ForumPostAdapter.MyVi
     ArrayList<ForumPost> forumPosts;
 
     ForumPostService forumPostService;
+    private  int lastPosition = -1;
 
     public ForumPostAdapter(Context context,ArrayList<ForumPost> forumPosts,User user,ForumPostService forumPostService){
         this.context = context;
@@ -58,6 +61,8 @@ public class ForumPostAdapter extends RecyclerView.Adapter<ForumPostAdapter.MyVi
         holder.tags.setText(forumPosts.get(position).getTags());
         assert forumPostUser != null;
         if(forumPostUser.getId() == user.getId()) holder.bin.setVisibility(View.VISIBLE);
+
+        setAnimation(holder.itemView,position);
     }
 
     @Override
@@ -140,5 +145,18 @@ public class ForumPostAdapter extends RecyclerView.Adapter<ForumPostAdapter.MyVi
     public  void add(ForumPost p){
         forumPosts.add(p);
         notifyItemChanged(forumPosts.size()-1);
+    }
+
+    private void setAnimation(View viewToAnimate, int position) {
+        // If the bound view wasn't previously displayed on screen, it's animated
+        if (position > lastPosition) {
+            //TranslateAnimation anim = new TranslateAnimation(0,-1000,0,-1000);
+            ScaleAnimation anim = new ScaleAnimation(0.0f, 1.0f, 0.0f, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+            //anim.setDuration(new Random().nextInt(501));//to make duration random number between [0,501)
+            anim.setDuration(550);//to make duration random number between [0,501)
+            viewToAnimate.startAnimation(anim);
+            lastPosition = position;
+
+        }
     }
 }
