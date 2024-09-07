@@ -12,6 +12,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +26,7 @@ public class MainPageActivity extends AppCompatActivity {
     ArrayList<ForumPost> forumPosts = new ArrayList<>();
     User user;
     ForumPostAdapter adapter;
+
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -44,6 +47,21 @@ public class MainPageActivity extends AppCompatActivity {
 
         // Load all forum posts
         setUpForumPosts();
+        FloatingActionButton fab;
+        fab = findViewById(R.id.floatingActionButton);
+
+        // Hide/Show FloatingActionButton on scroll
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (dy > 0 && fab.isShown()) {
+                    fab.hide();  // Hide FAB on scroll down
+                } else if (dy < 0) {
+                    fab.show();  // Show FAB on scroll up
+                }
+            }
+        });
     }
 
     public void createForumPost(View v) {
