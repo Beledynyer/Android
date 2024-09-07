@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/create_icon"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
@@ -45,8 +46,8 @@
 
     <View
         android:id="@+id/user_icon_line"
-        android:layout_width="0dp"
-        android:layout_height="140dp"
+        android:layout_width="406dp"
+        android:layout_height="54dp"
         android:layout_marginTop="20dp"
         android:background="@color/nmu_blue"
         app:layout_constraintEnd_toEndOf="parent"
@@ -56,8 +57,8 @@
 
     <EditText
         android:id="@+id/search"
-        android:layout_width="365dp"
-        android:layout_height="50dp"
+        android:layout_width="363dp"
+        android:layout_height="54dp"
         android:layout_marginStart="4dp"
         android:background="@color/nmu_yellow"
         android:drawableStart="@drawable/search_icon"
@@ -69,22 +70,7 @@
         android:textColorHint="@android:color/black"
         android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="@+id/user_icon_line"
-        app:layout_constraintStart_toEndOf="@+id/filter_icon"
-        app:layout_constraintTop_toBottomOf="@+id/crate_forum_post"
-        app:layout_constraintVertical_bias="0.115" />
-
-    <ImageView
-        android:id="@+id/create_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="createForumPost"
-        android:src="@drawable/create_icon"
-        app:layout_constraintBottom_toBottomOf="@+id/user_icon_line"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/user_icon_line"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintStart_toEndOf="@+id/filter_icon" />
 
     <ImageView
         android:id="@+id/filter_icon"
@@ -97,20 +83,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/user_icon_line"
         app:layout_constraintVertical_bias="0.473" />
-
-    <TextView
-        android:id="@+id/crate_forum_post"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="84dp"
-        android:fontFamily="@font/montserrat_bold"
-        android:text="Create Forum Post"
-        android:textColor="@android:color/white"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="@+id/create_icon"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/user_icon_line" />
-
 
 
     <TextView
@@ -131,8 +103,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/mRecycleView"
         android:layout_width="match_parent"
-        android:layout_height="550dp"
-        android:layout_marginTop="1dp"
+        android:layout_height="640dp"
         android:background="@color/nmu_blue"
         android:clipToPadding="false"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -140,5 +111,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/user_icon_line"
         app:layout_constraintVertical_bias="0.0" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="64dp"
+        android:clickable="true"
+        android:onClick="createForumPost"
+        android:backgroundTint="@color/nmu_yellow"
+        app:borderWidth="0dp"
+        app:fabCustomSize="60dp"
+        app:layout_constraintBottom_toBottomOf="@+id/mRecycleView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:maxImageSize="50dp"
+        app:srcCompat="@drawable/create_icon" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

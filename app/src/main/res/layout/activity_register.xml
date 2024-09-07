@@ -311,6 +311,7 @@
         android:backgroundTint="@color/nmu_yellow"
         android:fontFamily="@font/montserrat_bold"
         android:text="Register"
+        android:background="@drawable/btn_delete_background"
         android:textColor="@android:color/black"
         android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
