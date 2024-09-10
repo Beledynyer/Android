@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -53,19 +54,17 @@ public class MainPageActivity extends AppCompatActivity {
         fab = findViewById(R.id.floatingActionButton);
 
         // Hide/Show FloatingActionButton on scroll
-        if(!forumPosts.isEmpty()){
-            recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-                @Override
-                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                    super.onScrolled(recyclerView, dx, dy);
-                    if (dy > 0 && fab.isShown()) {
-                        fab.hide();  // Hide FAB on scroll down
-                    } else if (dy < 0) {
-                        fab.show();  // Show FAB on scroll up
-                    }
-                }
-            });
-        }
+        recyclerView.addOnScrollListener(new HideShowScrollListener() {
+            @Override
+            public void onHide() {
+                fab.animate().setInterpolator(new AccelerateDecelerateInterpolator()).scaleX(0).scaleY(0);
+            }
+
+            @Override
+            public void onShow() {
+                fab.animate().setInterpolator(new AccelerateDecelerateInterpolator()).scaleX(1).scaleY(1);
+            }
+        });
 
     }
 
