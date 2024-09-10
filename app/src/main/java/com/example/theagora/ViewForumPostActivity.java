@@ -10,7 +10,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -25,10 +28,10 @@ public class ViewForumPostActivity extends AppCompatActivity {
         return BitmapFactory.decodeByteArray(bytes,0,bytes.length);
     }
     User user;
-    ForumPost post ;
     UserService userService;
     TextView userName, postTitle, postContent, likeCount,creatorView;
     ImageView postImage;
+    FloatingActionButton backFb;
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,54 +45,75 @@ public class ViewForumPostActivity extends AppCompatActivity {
         postContent = findViewById(R.id.post_content);
         postImage = findViewById(R.id.post_image);
         likeCount = findViewById(R.id.like_counter);
+        backFb = findViewById(R.id.floatingActionButton2);
+        backFb.setOnClickListener(v ->{
+            finish();
+        });
 
         Intent userAndPost = getIntent();
         user = userAndPost.getParcelableExtra("user");
-        post = userAndPost.getParcelableExtra("forumPost");
-        userName = findViewById(R.id.user_name);
+        int postId = userAndPost.getIntExtra("forumPostId", -1); // Receive the post ID
+
         userName.setText(user.getfName() + " " + user.getlName());
 
-
-        post = userAndPost.getParcelableExtra("forumPost");
-
-        // Set post title and content
-        postTitle.setText(post.getTitle());
-        postContent.setText(post.getContent());
-
-        // Set number of likes
-        likeCount.setText(String.valueOf(post.getNumberOfLikes()));
-
-        // Load image if available, else hide the ImageView
-        if (post.getImage() != null && !post.getImage().isEmpty()) {
-            postImage.setVisibility(View.VISIBLE);
-            Bitmap bitmap = decodeBase64(post.getImage());
-            postImage.setImageBitmap(bitmap);
-        } else {
-            postImage.setVisibility(View.GONE);
-        }
-
-        // Make API call to get the creator of the post
-        userService = RetrofitClientInstance.getRetrofitInstance().create(UserService.class);
-        Call<User> call = userService.getUserById(post.getUserId());
-        call.enqueue(new Callback<User>() {
+        // Fetch the forum post details using the post ID
+        ForumPostService forumPostService = RetrofitClientInstance.getRetrofitInstance().create(ForumPostService.class);
+        forumPostService.getForumPostById(postId).enqueue(new Callback<ForumPost>() {
             @Override
-            public void onResponse(Call<User> call, Response<User> response) {
+            public void onResponse(@NonNull Call<ForumPost> call, @NonNull Response<ForumPost> response) {
                 if (response.isSuccessful()) {
-                    User creator = response.body();
-                    if (creator != null) {
-                        // Set the creator's name
-                       creatorView.setText(creator.getfName() + " " + creator.getlName());
+                    ForumPost post = response.body();
+                    if (post != null) {
+                        // Set post title and content
+                        postTitle.setText(post.getTitle() + ",");
+                        postContent.setText(post.getContent());
+
+                        // Set number of likes
+                        likeCount.setText(String.valueOf(post.getNumberOfLikes()));
+
+                        // Load image if available, else hide the ImageView
+                        if (post.getImage() != null && !post.getImage().isEmpty()) {
+                            if (!post.getImage().equals("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/wcAAwAB/TrTKEwAAAAASUVORK5CYII=")) {
+                                postImage.setVisibility(View.VISIBLE);
+                                Bitmap bitmap = decodeBase64(post.getImage());
+                                postImage.setImageBitmap(bitmap);
+                            }
+                        } else {
+                            postImage.setVisibility(View.GONE);
+                        }
+
+                        // Fetch and display the creator's name
+                        userService = RetrofitClientInstance.getRetrofitInstance().create(UserService.class);
+                        Call<User> callUser = userService.getUserById(post.getUserId());
+                        callUser.enqueue(new Callback<User>() {
+                            @Override
+                            public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
+                                if (response.isSuccessful()) {
+                                    User creator = response.body();
+                                    if (creator != null) {
+                                        if(!post.getTags().equals("Anonymous")){
+                                            creatorView.setText(creator.getfName() + " " + creator.getlName());
+                                        }
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
+                                creatorView.setText("Unknown User");
+                            }
+                        });
                     }
                 }
             }
 
             @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                // Handle failure to fetch user
-                userName.setText("Unknown User");
+            public void onFailure(@NonNull Call<ForumPost> call, @NonNull Throwable t) {
+                // Handle failure
             }
         });
     }
+
     public void back(View v){
         finish();
     }

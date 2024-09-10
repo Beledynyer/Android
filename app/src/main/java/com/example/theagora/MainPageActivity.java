@@ -53,17 +53,20 @@ public class MainPageActivity extends AppCompatActivity {
         fab = findViewById(R.id.floatingActionButton);
 
         // Hide/Show FloatingActionButton on scroll
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if (dy > 0 && fab.isShown()) {
-                    fab.hide();  // Hide FAB on scroll down
-                } else if (dy < 0) {
-                    fab.show();  // Show FAB on scroll up
+        if(!forumPosts.isEmpty()){
+            recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
+                    if (dy > 0 && fab.isShown()) {
+                        fab.hide();  // Hide FAB on scroll down
+                    } else if (dy < 0) {
+                        fab.show();  // Show FAB on scroll up
+                    }
                 }
-            }
-        });
+            });
+        }
+
     }
 
     public void createForumPost(View v) {

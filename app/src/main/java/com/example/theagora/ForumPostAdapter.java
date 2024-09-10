@@ -88,29 +88,13 @@ public class ForumPostAdapter extends RecyclerView.Adapter<ForumPostAdapter.MyVi
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
                     ForumPost post = forumPosts.get(position);
-                    int postId = post.getPostId();
+                    int postId = post.getPostId();  // Get the post ID
 
-                    // Fetch the specific forum post via API
-                    forumPostService.getForumPostById(postId).enqueue(new Callback<ForumPost>() {
-                        @Override
-                        public void onResponse(Call<ForumPost> call, Response<ForumPost> response) {
-                            if (response.isSuccessful()) {
-                                ForumPost fullPost = response.body();
-                                if (fullPost != null) {
-                                    // Send the post to ViewForumPostActivity
-                                    Intent intent = new Intent(itemView.getContext(), ViewForumPostActivity.class);
-                                    intent.putExtra("forumPost", fullPost); // Pass ForumPost object
-                                    intent.putExtra("user",user);
-                                    itemView.getContext().startActivity(intent);
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<ForumPost> call, Throwable t) {
-                            // Handle failure (e.g., show a message to the user)
-                        }
-                    });
+                    // Send only the post ID to ViewForumPostActivity
+                    Intent intent = new Intent(itemView.getContext(), ViewForumPostActivity.class);
+                    intent.putExtra("forumPostId", postId); // Pass the forumPost ID
+                    intent.putExtra("user", user);
+                    itemView.getContext().startActivity(intent);
                 }
             });
 

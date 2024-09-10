@@ -4,8 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ViewForumPostActivity"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:onClick="back"
+    tools:context=".ViewForumPostActivity">
 
     <!-- Header Text -->
     <TextView
@@ -36,15 +37,27 @@
     <!-- NestedScrollView for content -->
 
     <!-- Back Button -->
+    <View
+        android:id="@+id/user_info_border"
+        android:layout_width="0dp"
+        android:layout_height="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@color/nmu_blue"
+        app:layout_constraintBottom_toTopOf="@+id/nested_scroll_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/user_icon"
+        app:layout_constraintVertical_bias="0.0" />
+
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nested_scroll_view"
         android:layout_width="match_parent"
-        android:layout_height="600dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="8dp"
         android:fillViewport="true"
-        app:layout_constraintBottom_toTopOf="@+id/back_btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -61,20 +74,21 @@
 
             <!-- Border Under User Info -->
 
-            <View
-                android:id="@+id/user_info_border"
-                android:layout_width="0dp"
-                android:layout_height="10dp"
-                android:background="@color/nmu_blue"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/cl" />
-
             <!-- Title of Post -->
 
             <!-- Content of Post -->
 
             <!-- Post Image -->
+
+            <View
+                android:id="@+id/lineXD"
+                android:layout_width="0dp"
+                android:layout_height="3dp"
+                android:background="@color/nmu_blue"
+                app:layout_constraintBottom_toTopOf="@+id/post_title"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/post_creator_icon" />
 
             <TextView
                 android:id="@+id/post_title"
@@ -106,14 +120,14 @@
 
             <ImageView
                 android:id="@+id/post_image"
-                android:layout_width="0dp"
-                android:layout_height="200dp"
-                android:layout_marginTop="16dp"
-                android:scaleType="centerCrop"
+                android:layout_width="match_parent"
+                android:layout_height="230dp"
+                android:layout_marginBottom="8dp"
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/post_content" />
+                app:layout_constraintTop_toBottomOf="@id/post_content"
+                app:srcCompat="@drawable/ic_launcher_background" />
 
             <!-- Post Creator's User Icon -->
 
@@ -124,10 +138,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="11dp"
                 android:src="@drawable/user_icon"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/user_info_border" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <!-- Like Button and Counter -->
 
@@ -137,7 +150,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
                 android:fontFamily="@font/montserrat_bold"
-                android:text="Creator Name"
+                android:text="####"
                 android:textColor="@color/nmu_blue"
                 android:textSize="20sp"
                 app:layout_constraintBottom_toBottomOf="@+id/post_creator_icon"
@@ -160,8 +173,8 @@
                     android:id="@+id/like_icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="7dp"
                     android:layout_marginStart="16dp"
+                    android:layout_marginTop="7dp"
                     android:src="@drawable/like_img"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -175,9 +188,9 @@
                     android:text="0"
                     android:textColor="@android:color/white"
                     android:textSize="20sp"
+                    app:layout_constraintBottom_toBottomOf="@id/like_icon"
                     app:layout_constraintStart_toEndOf="@id/like_icon"
-                    app:layout_constraintTop_toTopOf="@id/like_icon"
-                    app:layout_constraintBottom_toBottomOf="@id/like_icon" />
+                    app:layout_constraintTop_toTopOf="@id/like_icon" />
 
                 <!-- Comment Icon -->
                 <ImageView
@@ -186,9 +199,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
                     android:src="@drawable/comment_img"
+                    app:layout_constraintBottom_toBottomOf="@id/like_icon"
                     app:layout_constraintStart_toEndOf="@id/like_counter"
-                    app:layout_constraintTop_toTopOf="@id/like_icon"
-                    app:layout_constraintBottom_toBottomOf="@id/like_icon" />
+                    app:layout_constraintTop_toTopOf="@id/like_icon" />
 
                 <!-- Comment Counter -->
                 <TextView
@@ -199,31 +212,25 @@
                     android:text="0"
                     android:textColor="@android:color/white"
                     android:textSize="20sp"
+                    app:layout_constraintBottom_toBottomOf="@id/comment_icon"
                     app:layout_constraintStart_toEndOf="@id/comment_icon"
-                    app:layout_constraintTop_toTopOf="@id/comment_icon"
-                    app:layout_constraintBottom_toBottomOf="@id/comment_icon" />
+                    app:layout_constraintTop_toTopOf="@id/comment_icon" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="60dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/like_comment_section"
+                app:srcCompat="@drawable/ic_launcher_background" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.core.widget.NestedScrollView>
-
-    <Button
-        android:id="@+id/back_btn"
-        android:layout_width="184dp"
-        android:layout_height="65dp"
-        android:layout_marginBottom="60dp"
-        android:background="@drawable/btn_delete_background"
-        android:backgroundTint="@color/nmu_yellow"
-        android:fontFamily="@font/montserrat_bold"
-        android:onClick="back"
-        android:text="Back"
-        android:textColor="@android:color/black"
-        android:textSize="30sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
         android:id="@+id/user_icon"
@@ -246,5 +253,19 @@
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="@+id/user_icon"
         app:layout_constraintStart_toEndOf="@+id/user_icon" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="36dp"
+        android:layout_marginBottom="24dp"
+        android:backgroundTint="@color/nmu_yellow"
+        android:clickable="true"
+        android:tint="@color/nmu_blue"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:maxImageSize="50dp"
+        app:srcCompat="@drawable/back_icon" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
