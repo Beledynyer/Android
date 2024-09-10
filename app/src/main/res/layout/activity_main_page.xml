@@ -124,9 +124,10 @@
         android:onClick="createForumPost"
         app:borderWidth="0dp"
         app:fabCustomSize="60dp"
+        android:tint="@color/nmu_blue"
         app:layout_constraintBottom_toBottomOf="@+id/mRecycleView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:maxImageSize="50dp"
+        app:maxImageSize="60dp"
         app:srcCompat="@drawable/create_icon" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
