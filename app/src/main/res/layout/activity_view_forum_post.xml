@@ -7,6 +7,7 @@
     tools:context=".ViewForumPostActivity"
     android:background="@color/white">
 
+    <!-- Header Text -->
     <TextView
         android:id="@+id/heading"
         android:layout_width="wrap_content"
@@ -18,10 +19,10 @@
         android:textSize="30sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Heading Underline -->
     <View
         android:id="@+id/heading_underline"
         android:layout_width="0dp"
@@ -32,45 +33,218 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/heading" />
 
-    <ImageView
-        android:id="@+id/user_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:src="@drawable/user_icon"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.043"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/heading_underline" />
+    <!-- NestedScrollView for content -->
 
-    <TextView
-        android:id="@+id/user_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="36dp"
-        android:fontFamily="@font/montserrat_bold"
-        android:text="####"
-        android:textColor="@color/nmu_blue"
-        android:textSize="24sp"
-        app:layout_constraintStart_toEndOf="@+id/user_icon"
-        app:layout_constraintTop_toBottomOf="@+id/heading"
-        app:layout_constraintVertical_bias="0.039" />
+    <!-- Back Button -->
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nested_scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="600dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toTopOf="@+id/back_btn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/user_icon">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!-- User Icon (viewer) -->
+
+            <!-- User Name (viewer) -->
+
+            <!-- Border Under User Info -->
+
+            <View
+                android:id="@+id/user_info_border"
+                android:layout_width="0dp"
+                android:layout_height="10dp"
+                android:background="@color/nmu_blue"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/cl" />
+
+            <!-- Title of Post -->
+
+            <!-- Content of Post -->
+
+            <!-- Post Image -->
+
+            <TextView
+                android:id="@+id/post_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="24dp"
+                android:fontFamily="@font/montserrat_bold"
+                android:text="Post Title"
+                android:textColor="@color/nmu_blue"
+                android:textSize="22sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/post_creator_icon" />
+
+            <TextView
+                android:id="@+id/post_content"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="Post Content"
+                android:textColor="@android:color/black"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/post_title" />
+
+            <ImageView
+                android:id="@+id/post_image"
+                android:layout_width="0dp"
+                android:layout_height="200dp"
+                android:layout_marginTop="16dp"
+                android:scaleType="centerCrop"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/post_content" />
+
+            <!-- Post Creator's User Icon -->
+
+            <!-- Post Creator's User Name -->
+
+            <ImageView
+                android:id="@+id/post_creator_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="11dp"
+                android:src="@drawable/user_icon"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/user_info_border" />
+
+            <!-- Like Button and Counter -->
+
+            <TextView
+                android:id="@+id/post_creator_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:fontFamily="@font/montserrat_bold"
+                android:text="Creator Name"
+                android:textColor="@color/nmu_blue"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="@+id/post_creator_icon"
+                app:layout_constraintStart_toEndOf="@id/post_creator_icon"
+                app:layout_constraintTop_toTopOf="@id/post_creator_icon"
+                app:layout_constraintVertical_bias="1.0" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/like_comment_section"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@color/nmu_blue"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/post_image">
+
+                <!-- Like Icon -->
+                <ImageView
+                    android:id="@+id/like_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="7dp"
+                    android:layout_marginStart="16dp"
+                    android:src="@drawable/like_img"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <!-- Like Counter -->
+                <TextView
+                    android:id="@+id/like_counter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="0"
+                    android:textColor="@android:color/white"
+                    android:textSize="20sp"
+                    app:layout_constraintStart_toEndOf="@id/like_icon"
+                    app:layout_constraintTop_toTopOf="@id/like_icon"
+                    app:layout_constraintBottom_toBottomOf="@id/like_icon" />
+
+                <!-- Comment Icon -->
+                <ImageView
+                    android:id="@+id/comment_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:src="@drawable/comment_img"
+                    app:layout_constraintStart_toEndOf="@id/like_counter"
+                    app:layout_constraintTop_toTopOf="@id/like_icon"
+                    app:layout_constraintBottom_toBottomOf="@id/like_icon" />
+
+                <!-- Comment Counter -->
+                <TextView
+                    android:id="@+id/comment_counter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="0"
+                    android:textColor="@android:color/white"
+                    android:textSize="20sp"
+                    app:layout_constraintStart_toEndOf="@id/comment_icon"
+                    app:layout_constraintTop_toTopOf="@id/comment_icon"
+                    app:layout_constraintBottom_toBottomOf="@id/comment_icon" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
 
     <Button
-        android:id="@+id/logIn_Button"
+        android:id="@+id/back_btn"
         android:layout_width="184dp"
         android:layout_height="65dp"
         android:layout_marginBottom="60dp"
         android:background="@drawable/btn_delete_background"
         android:backgroundTint="@color/nmu_yellow"
         android:fontFamily="@font/montserrat_bold"
+        android:onClick="back"
         android:text="Back"
         android:textColor="@android:color/black"
         android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/user_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="23dp"
+        android:layout_marginTop="27dp"
+        android:src="@drawable/user_icon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/heading_underline" />
+
+    <TextView
+        android:id="@+id/user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:fontFamily="@font/montserrat_bold"
+        android:text="####"
+        android:textColor="@color/nmu_blue"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/user_icon"
+        app:layout_constraintStart_toEndOf="@+id/user_icon" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

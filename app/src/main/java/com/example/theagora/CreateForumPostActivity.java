@@ -9,6 +9,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.VectorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -27,6 +28,7 @@ import androidx.core.content.ContextCompat;
 import com.google.gson.Gson;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -77,92 +79,42 @@ public class CreateForumPostActivity extends AppCompatActivity {
 
     }
 
-    private static final int MAX_IMAGE_WIDTH = 800; // Max width for the image
-    private static final int MAX_IMAGE_HEIGHT = 800; // Max height for the image
-    private static final int COMPRESS_QUALITY = 70; // Quality of the compressed image
-
-    // Method to convert ImageView to byte array with resizing and compression
-    private String convertImageViewToByteArray(ImageView imageView) {
-        if (imageView.getDrawable() != null) {
-            Bitmap bitmap;
-
-            if (imageView.getDrawable() instanceof BitmapDrawable) {
-                bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
-            } else if (imageView.getDrawable() instanceof VectorDrawable) {
-                // Convert VectorDrawable to Bitmap
-                VectorDrawable vectorDrawable = (VectorDrawable) imageView.getDrawable();
-                bitmap = Bitmap.createBitmap(
-                        vectorDrawable.getIntrinsicWidth(),
-                        vectorDrawable.getIntrinsicHeight(),
-                        Bitmap.Config.ARGB_8888
-                );
-                Canvas canvas = new Canvas(bitmap);
-                vectorDrawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-                vectorDrawable.draw(canvas);
-            } else {
-                // Handle other drawable types or return an empty array
-                return null;
-            }
-
-            // Resize the bitmap to 1x1 pixel
-            Bitmap smallBitmap = Bitmap.createScaledBitmap(bitmap, 1, 1, true);
-
-            // Compress the bitmap to reduce file size
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            smallBitmap.compress(Bitmap.CompressFormat.JPEG, 10, stream); // Set very low quality
-
-            // Convert the compressed bitmap to a byte array
-            byte[] byteArray = stream.toByteArray();
-
-            // Encode the byte array to Base64
-            String base64Image = Base64.encodeToString(byteArray, Base64.NO_WRAP);
-            Log.d("Base64Image", base64Image); // Log the Base64 string for debugging
-
-            // Decode Base64 string back to byte array
-            return  base64Image;
-        } else {
-            // Return an empty array or handle the case where image is null
-            return null;
-        }
-    }
-
-    // Method to resize the bitmap
-    private Bitmap resizeBitmap(Bitmap originalBitmap, int maxWidth, int maxHeight) {
-        int width = originalBitmap.getWidth();
-        int height = originalBitmap.getHeight();
-        float aspectRatio = (float) width / height;
-
-        if (width > maxWidth) {
-            width = maxWidth;
-            height = Math.round(width / aspectRatio);
-        }
-
-        if (height > maxHeight) {
-            height = maxHeight;
-            width = Math.round(height * aspectRatio);
-        }
-
-        return Bitmap.createScaledBitmap(originalBitmap, width, height, true);
-    }
-
-
-
     public void addImage(View v) {
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setType("image/*"); // To select images
+        im.setImageBitmap(null);
+        // Initialize intent
+        Intent intent=new Intent(Intent.ACTION_PICK);
+        // set type
+        intent.setType("image/*");
+        // start activity result
         //noinspection deprecation
-        startActivityForResult(intent, 1); // Request code 1
+        startActivityForResult(Intent.createChooser(intent,"Select Image"),1);
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == 1 && resultCode == RESULT_OK && data != null && data.getData() != null) {
+
+
             // Get the URI of the selected image
             Uri imageUri = data.getData();
             im.setVisibility(View.VISIBLE);
             im.setImageURI(imageUri); // Set the image to ImageView
-            imageByteArray = convertImageViewToByteArray(im);
+            Bitmap bitmap= null;
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),imageUri);
+                ByteArrayOutputStream stream=new ByteArrayOutputStream();
+                // compress Bitmap
+                bitmap.compress(Bitmap.CompressFormat.JPEG,100,stream);
+                // Initialize byte array
+                byte[] bytes=stream.toByteArray();
+                // get base64 encoded string
+                imageByteArray = Base64.encodeToString(bytes,Base64.NO_WRAP);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            // initialize byte stream
+
         }
     }
     @Override

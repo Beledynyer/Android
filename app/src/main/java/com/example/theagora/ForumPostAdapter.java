@@ -3,6 +3,7 @@ package com.example.theagora;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,7 +43,7 @@ public class ForumPostAdapter extends RecyclerView.Adapter<ForumPostAdapter.MyVi
     public ForumPostAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.recycler_view_row,parent,false);
-        return new ForumPostAdapter.MyViewHolder(view,forumPosts,this,forumPostService);
+        return new ForumPostAdapter.MyViewHolder(view,forumPosts,this,forumPostService,this.user);
     }
 
     @SuppressLint("SetTextI18n")
@@ -75,7 +76,7 @@ public class ForumPostAdapter extends RecyclerView.Adapter<ForumPostAdapter.MyVi
         TextView name, title, tags;
         ImageView bin;
 
-        public MyViewHolder(@NonNull View itemView, ArrayList<ForumPost> forumPosts, ForumPostAdapter adapter,ForumPostService forumPostService) {
+        public MyViewHolder(@NonNull View itemView, ArrayList<ForumPost> forumPosts, ForumPostAdapter adapter,ForumPostService forumPostService,User user) {
             super(itemView);
 
             name = itemView.findViewById(R.id.forum_post_username);
@@ -83,8 +84,34 @@ public class ForumPostAdapter extends RecyclerView.Adapter<ForumPostAdapter.MyVi
             tags = itemView.findViewById(R.id.tags_view);
             bin = itemView.findViewById(R.id.bin_icon);
 
-            itemView.setOnClickListener(view ->{
+            itemView.setOnClickListener(view -> {
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION) {
+                    ForumPost post = forumPosts.get(position);
+                    int postId = post.getPostId();
 
+                    // Fetch the specific forum post via API
+                    forumPostService.getForumPostById(postId).enqueue(new Callback<ForumPost>() {
+                        @Override
+                        public void onResponse(Call<ForumPost> call, Response<ForumPost> response) {
+                            if (response.isSuccessful()) {
+                                ForumPost fullPost = response.body();
+                                if (fullPost != null) {
+                                    // Send the post to ViewForumPostActivity
+                                    Intent intent = new Intent(itemView.getContext(), ViewForumPostActivity.class);
+                                    intent.putExtra("forumPost", fullPost); // Pass ForumPost object
+                                    intent.putExtra("user",user);
+                                    itemView.getContext().startActivity(intent);
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ForumPost> call, Throwable t) {
+                            // Handle failure (e.g., show a message to the user)
+                        }
+                    });
+                }
             });
 
             bin.setOnClickListener(view -> {
