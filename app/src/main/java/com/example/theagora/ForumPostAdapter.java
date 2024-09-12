@@ -138,13 +138,11 @@ public class ForumPostAdapter extends RecyclerView.Adapter<ForumPostAdapter.MyVi
                                     // Handle the case where the server responds with an error
                                 }
                             }
-
                             @Override
                             public void onFailure(Call<Void> call, Throwable t) {
                                 // Handle the error here (e.g., show a message to the user)
                             }
                         });
-
                     }
                     dialog.dismiss();
                 });
@@ -155,7 +153,6 @@ public class ForumPostAdapter extends RecyclerView.Adapter<ForumPostAdapter.MyVi
 
         }
     }
-
 
     public  void add(ForumPost p){
         forumPosts.add(p);

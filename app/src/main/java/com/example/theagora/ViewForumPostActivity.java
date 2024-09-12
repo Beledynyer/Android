@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -67,6 +68,8 @@ public class ViewForumPostActivity extends AppCompatActivity {
                         // Set post title and content
                         postTitle.setText(post.getTitle() + ",");
                         postContent.setText(post.getContent());
+                        Log.d("TITLE",post.getTitle());
+                        Log.d("CONTENT",postContent.getText().toString());
 
                         // Set number of likes
                         likeCount.setText(String.valueOf(post.getNumberOfLikes()));

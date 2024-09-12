@@ -28,8 +28,8 @@ public class MainPageActivity extends AppCompatActivity {
     ArrayList<ForumPost> forumPosts = new ArrayList<>();
     User user;
     ForumPostAdapter adapter;
-
-
+    RecyclerView recyclerView;
+    ForumPostService forumPostService;
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,8 +41,8 @@ public class MainPageActivity extends AppCompatActivity {
         assert user != null;
         userNameView.setText(user.getfName() + " " + user.getlName());
 
-        RecyclerView recyclerView = findViewById(R.id.mRecycleView);
-        ForumPostService forumPostService = RetrofitClientInstance.getRetrofitInstance().create(ForumPostService.class);
+        recyclerView = findViewById(R.id.mRecycleView);
+        forumPostService = RetrofitClientInstance.getRetrofitInstance().create(ForumPostService.class);
         adapter = new ForumPostAdapter(this, forumPosts,user,forumPostService);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -80,25 +80,7 @@ public class MainPageActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == 1 && resultCode == RESULT_OK && data != null) {
-            ForumPost newPost = data.getParcelableExtra("newPost");
-            if (newPost != null) {
-                int userId = newPost.getUserId();
-                UserService userService = RetrofitClientInstance.getRetrofitInstance().create(UserService.class);
-                Call<User> userCall = userService.getUserById(userId);
-                userCall.enqueue(new Callback<User>() {
-                    @Override
-                    public void onResponse(@NonNull Call<User> call, @NonNull Response<User> userResponse) {
-                        if (userResponse.isSuccessful() && userResponse.body() != null) {
-                            newPost.setUser(userResponse.body());
-                        }
-                        adapter.add(newPost);
-                    }
-                    @Override
-                    public void onFailure(Call<User> call, Throwable t) {
-                        Log.e("MainPageActivity", "Failed to load user details", t);
-                    }
-                });
-            }
+            setUpForumPosts();
         }
     }
 
