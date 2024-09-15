@@ -2,17 +2,20 @@ package com.example.theagora;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.core.widget.ImageViewCompat;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -20,19 +23,22 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-
 public class ViewForumPostActivity extends AppCompatActivity {
 
     public static Bitmap decodeBase64(String base64String) {
-        byte[] bytes=Base64.decode(base64String,Base64.NO_WRAP);
-        // Initialize bitmap
-        return BitmapFactory.decodeByteArray(bytes,0,bytes.length);
+        byte[] bytes = Base64.decode(base64String, Base64.NO_WRAP);
+        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
     }
+
     User user;
     UserService userService;
-    TextView userName, postTitle, postContent, likeCount,creatorView;
-    ImageView postImage;
+    LikeService likeService;
+    TextView userName, postTitle, postContent, likeCount, creatorView, commentCount;
+    ImageView postImage, likeIcon, commentIcon;
     FloatingActionButton backFb;
+    int postId;
+    boolean isLiked = false;
+
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,19 +52,94 @@ public class ViewForumPostActivity extends AppCompatActivity {
         postContent = findViewById(R.id.post_content);
         postImage = findViewById(R.id.post_image);
         likeCount = findViewById(R.id.like_counter);
+        likeIcon = findViewById(R.id.like_icon);
+        commentIcon = findViewById(R.id.comment_icon);
+        commentCount = findViewById(R.id.comment_counter);
         backFb = findViewById(R.id.floatingActionButton2);
-        backFb.setOnClickListener(v ->{
-            finish();
-        });
+        backFb.setOnClickListener(v -> finish());
 
         Intent userAndPost = getIntent();
         user = userAndPost.getParcelableExtra("user");
-        int postId = userAndPost.getIntExtra("forumPostId", -1); // Receive the post ID
+        postId = userAndPost.getIntExtra("forumPostId", -1);
 
         userName.setText(user.getfName() + " " + user.getlName());
 
-        // Fetch the forum post details using the post ID
+        // Initialize services
+        likeService = RetrofitClientInstance.getRetrofitInstance().create(LikeService.class);
         ForumPostService forumPostService = RetrofitClientInstance.getRetrofitInstance().create(ForumPostService.class);
+
+        // Fetch like count
+        fetchLikeCount();
+
+        // Check if user has liked the post
+        checkIfLiked();
+
+        // Set up like icon click listener
+        likeIcon.setOnClickListener(v -> toggleLike());
+
+        // Fetch the forum post details
+        fetchForumPost(forumPostService);
+    }
+
+    private void fetchLikeCount() {
+        likeService.getLikeCount(postId).enqueue(new Callback<LikeCountResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<LikeCountResponse> call, @NonNull Response<LikeCountResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    likeCount.setText(String.valueOf(response.body().getCount()));
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<LikeCountResponse> call, @NonNull Throwable t) {
+                Toast.makeText(ViewForumPostActivity.this, "Failed to fetch like count", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void checkIfLiked() {
+        likeService.hasUserLikedPost(user.getId(), postId).enqueue(new Callback<HasLikedResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<HasLikedResponse> call, @NonNull Response<HasLikedResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    isLiked = response.body().hasLiked();
+                    updateLikeIcon();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<HasLikedResponse> call, @NonNull Throwable t) {
+                Toast.makeText(ViewForumPostActivity.this, "Failed to check like status", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void toggleLike() {
+        likeService.toggleLike(user.getId(), postId).enqueue(new Callback<LikeResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<LikeResponse> call, @NonNull Response<LikeResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    isLiked = response.body().isLiked();
+                    updateLikeIcon();
+                    fetchLikeCount();  // Update the like count after toggling
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<LikeResponse> call, @NonNull Throwable t) {
+                Toast.makeText(ViewForumPostActivity.this, "Failed to toggle like", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void updateLikeIcon() {
+        int color = isLiked ?
+                ContextCompat.getColor(this, R.color.nmu_yellow) :
+                ContextCompat.getColor(this, android.R.color.white);
+        ImageViewCompat.setImageTintList(likeIcon, ColorStateList.valueOf(color));
+    }
+
+    private void fetchForumPost(ForumPostService forumPostService) {
         forumPostService.getForumPostById(postId).enqueue(new Callback<ForumPost>() {
             @Override
             public void onResponse(@NonNull Call<ForumPost> call, @NonNull Response<ForumPost> response) {
@@ -68,11 +149,6 @@ public class ViewForumPostActivity extends AppCompatActivity {
                         // Set post title and content
                         postTitle.setText(post.getTitle() + ",");
                         postContent.setText(post.getContent());
-                        Log.d("TITLE",post.getTitle());
-                        Log.d("CONTENT",postContent.getText().toString());
-
-                        // Set number of likes
-                        likeCount.setText(String.valueOf(post.getNumberOfLikes()));
 
                         // Load image if available, else hide the ImageView
                         if (post.getImage() != null && !post.getImage().isEmpty()) {
@@ -86,26 +162,7 @@ public class ViewForumPostActivity extends AppCompatActivity {
                         }
 
                         // Fetch and display the creator's name
-                        userService = RetrofitClientInstance.getRetrofitInstance().create(UserService.class);
-                        Call<User> callUser = userService.getUserById(post.getUserId());
-                        callUser.enqueue(new Callback<User>() {
-                            @Override
-                            public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
-                                if (response.isSuccessful()) {
-                                    User creator = response.body();
-                                    if (creator != null) {
-                                        if(!post.getTags().equals("Anonymous")){
-                                            creatorView.setText(creator.getfName() + " " + creator.getlName());
-                                        }
-                                    }
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
-                                creatorView.setText("Unknown User");
-                            }
-                        });
+                        fetchCreatorName(post);
                     }
                 }
             }
@@ -113,11 +170,35 @@ public class ViewForumPostActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Call<ForumPost> call, @NonNull Throwable t) {
                 // Handle failure
+                Toast.makeText(ViewForumPostActivity.this, "Failed to fetch forum post", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    public void back(View v){
+    private void fetchCreatorName(ForumPost post) {
+        userService = RetrofitClientInstance.getRetrofitInstance().create(UserService.class);
+        Call<User> callUser = userService.getUserById(post.getUserId());
+        callUser.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
+                if (response.isSuccessful()) {
+                    User creator = response.body();
+                    if (creator != null) {
+                        if (!post.getTags().equals("Anonymous")) {
+                            creatorView.setText(creator.getfName() + " " + creator.getlName());
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
+                creatorView.setText("Unknown User");
+            }
+        });
+    }
+
+    public void back(View v) {
         finish();
     }
 }
