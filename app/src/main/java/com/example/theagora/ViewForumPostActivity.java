@@ -16,8 +16,13 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.widget.ImageViewCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -38,6 +43,14 @@ public class ViewForumPostActivity extends AppCompatActivity {
     FloatingActionButton backFb;
     int postId;
     boolean isLiked = false;
+
+    RecyclerView commentsRecyclerView;
+    CommentAdapter commentAdapter;
+    boolean isCommentsVisible = false;
+
+    ForumCommentService forumCommentService;
+    CommentService commentService;
+    List<Comment> comments = new ArrayList<>();
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -79,7 +92,36 @@ public class ViewForumPostActivity extends AppCompatActivity {
 
         // Fetch the forum post details
         fetchForumPost(forumPostService);
+
+        commentsRecyclerView = findViewById(R.id.comments_recycler_view);
+        commentsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        commentAdapter = new CommentAdapter(comments);
+        commentsRecyclerView.setAdapter(commentAdapter);
+
+        // Set up comment icon click listener
+        commentIcon.setOnClickListener(v -> toggleComments());
+
+        forumCommentService = RetrofitClientInstance.getRetrofitInstance().create(ForumCommentService.class);
+        commentService = RetrofitClientInstance.getRetrofitInstance().create(CommentService.class);
+        userService = RetrofitClientInstance.getRetrofitInstance().create(UserService.class);
+
+        fetchComments();
     }
+
+    private void toggleComments() {
+        isCommentsVisible = !isCommentsVisible;
+        commentsRecyclerView.setVisibility(isCommentsVisible ? View.VISIBLE : View.GONE);
+        commentsRecyclerView.setBackgroundColor(getResources().getColor(R.color.nmu_blue) );
+        updateCommentIcon();
+    }
+
+    private void updateCommentIcon() {
+        int color = isCommentsVisible ?
+                ContextCompat.getColor(this, R.color.nmu_yellow) :
+                ContextCompat.getColor(this, android.R.color.white);
+        ImageViewCompat.setImageTintList(commentIcon, ColorStateList.valueOf(color));
+    }
+
 
     private void fetchLikeCount() {
         likeService.getLikeCount(postId).enqueue(new Callback<LikeCountResponse>() {
@@ -184,7 +226,7 @@ public class ViewForumPostActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     User creator = response.body();
                     if (creator != null) {
-                        if (!post.getTags().equals("Anonymous")) {
+                        if (!post.getTags().equals("Anonymous") || creator.getId() == user.getId()) {
                             creatorView.setText(creator.getfName() + " " + creator.getlName());
                         }
                     }
@@ -195,6 +237,70 @@ public class ViewForumPostActivity extends AppCompatActivity {
             public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
                 creatorView.setText("Unknown User");
             }
+        });
+    }
+
+    private void fetchComments() {
+        forumCommentService.getCommentsForPost(postId).enqueue(new Callback<List<ForumComment>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<ForumComment>> call, @NonNull Response<List<ForumComment>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<ForumComment> forumComments = response.body();
+                    for (ForumComment forumComment : forumComments) {
+                        fetchCommentDetails(forumComment);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<ForumComment>> call, @NonNull Throwable t) {
+                Toast.makeText(ViewForumPostActivity.this, "Failed to fetch comments", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void fetchCommentDetails(ForumComment forumComment) {
+        commentService.getComment(forumComment.getCommentId()).enqueue(new Callback<Comment>() {
+            @Override
+            public void onResponse(@NonNull Call<Comment> call, @NonNull Response<Comment> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Comment comment = response.body();
+                    fetchCommentUser(comment, forumComment.getUserId());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Comment> call, @NonNull Throwable t) {
+                Toast.makeText(ViewForumPostActivity.this, "Failed to fetch comment details", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void fetchCommentUser(Comment comment, int userId) {
+        userService.getUserById(userId).enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    User user = response.body();
+                    comment.setUser(user);
+                    comments.add(comment);
+                    updateCommentAdapter();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
+                Toast.makeText(ViewForumPostActivity.this, "Failed to fetch comment user", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private void updateCommentAdapter() {
+        runOnUiThread(() -> {
+            commentAdapter.setComments(comments);
+            commentAdapter.notifyDataSetChanged();
+            commentCount.setText(String.valueOf(comments.size()));
         });
     }
 
