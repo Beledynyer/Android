@@ -28,7 +28,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ViewForumPostActivity extends AppCompatActivity {
+public class ViewForumPostActivity extends AppCompatActivity implements CommentDeletionListener{
 
     public static Bitmap decodeBase64(String base64String) {
         byte[] bytes = Base64.decode(base64String, Base64.NO_WRAP);
@@ -95,7 +95,7 @@ public class ViewForumPostActivity extends AppCompatActivity {
 
         commentsRecyclerView = findViewById(R.id.comments_recycler_view);
         commentsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        commentAdapter = new CommentAdapter(comments);
+        commentAdapter = new CommentAdapter(comments,user,this);
         commentsRecyclerView.setAdapter(commentAdapter);
 
         // Set up comment icon click listener
@@ -183,6 +183,7 @@ public class ViewForumPostActivity extends AppCompatActivity {
 
     private void fetchForumPost(ForumPostService forumPostService) {
         forumPostService.getForumPostById(postId).enqueue(new Callback<ForumPost>() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onResponse(@NonNull Call<ForumPost> call, @NonNull Response<ForumPost> response) {
                 if (response.isSuccessful()) {
@@ -221,6 +222,7 @@ public class ViewForumPostActivity extends AppCompatActivity {
         userService = RetrofitClientInstance.getRetrofitInstance().create(UserService.class);
         Call<User> callUser = userService.getUserById(post.getUserId());
         callUser.enqueue(new Callback<User>() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
                 if (response.isSuccessful()) {
@@ -233,6 +235,7 @@ public class ViewForumPostActivity extends AppCompatActivity {
                 }
             }
 
+            @SuppressLint("SetTextI18n")
             @Override
             public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
                 creatorView.setText("Unknown User");
@@ -306,5 +309,13 @@ public class ViewForumPostActivity extends AppCompatActivity {
 
     public void back(View v) {
         finish();
+    }
+
+    @Override
+    public void onCommentDeleted() {
+        runOnUiThread(() -> {
+            int currentCount = Integer.parseInt(commentCount.getText().toString());
+            commentCount.setText(String.valueOf(currentCount - 1));
+        });
     }
 }
