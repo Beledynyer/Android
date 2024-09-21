@@ -8,6 +8,8 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Base64;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,7 +42,7 @@ public class ViewForumPostActivity extends AppCompatActivity implements CommentD
     LikeService likeService;
     TextView userName, postTitle, postContent, likeCount, creatorView, commentCount;
     ImageView postImage, likeIcon, commentIcon;
-    FloatingActionButton backFb;
+    Button backFb;
     int postId;
     boolean isLiked = false;
 
@@ -51,6 +53,9 @@ public class ViewForumPostActivity extends AppCompatActivity implements CommentD
     ForumCommentService forumCommentService;
     CommentService commentService;
     List<Comment> comments = new ArrayList<>();
+
+    EditText commentEditText;
+    Button submitCommentButton;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -106,12 +111,67 @@ public class ViewForumPostActivity extends AppCompatActivity implements CommentD
         userService = RetrofitClientInstance.getRetrofitInstance().create(UserService.class);
 
         fetchComments();
+        commentEditText = findViewById(R.id.comment_edit_text);
+        submitCommentButton = findViewById(R.id.submit_comment_button);
+
+        // Set up comment submission
+        submitCommentButton.setOnClickListener(v -> submitComment());
     }
+
+    private void submitComment() {
+        String commentContent = commentEditText.getText().toString().trim();
+        if (!commentContent.isEmpty()) {
+            CommentDto commentDto = new CommentDto(commentContent, user.getId(), postId);
+
+            forumCommentService.addComment(commentDto).enqueue(new Callback<ForumComment>() {
+                @Override
+                public void onResponse(@NonNull Call<ForumComment> call, @NonNull Response<ForumComment> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        ForumComment createdForumComment = response.body();
+                        // Now fetch the Comment using the CommentService
+                        commentService.getComment(createdForumComment.getCommentId()).enqueue(new Callback<Comment>() {
+                            @Override
+                            public void onResponse(@NonNull Call<Comment> call, @NonNull Response<Comment> response) {
+                                if (response.isSuccessful() && response.body() != null) {
+                                    Comment createdComment = response.body();
+                                    createdComment.setUser(user);
+                                    comments.add(createdComment);
+                                    updateCommentAdapter();
+                                    commentEditText.setText("");
+                                    Toast.makeText(ViewForumPostActivity.this, "Comment added successfully", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(ViewForumPostActivity.this, "Failed to fetch comment details", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(@NonNull Call<Comment> call, @NonNull Throwable t) {
+                                Toast.makeText(ViewForumPostActivity.this, "Failed to fetch comment details", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    } else {
+                        Toast.makeText(ViewForumPostActivity.this, "Failed to add comment", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<ForumComment> call, @NonNull Throwable t) {
+                    Toast.makeText(ViewForumPostActivity.this, "Failed to add comment", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            Toast.makeText(this, "Please enter a comment", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
 
     private void toggleComments() {
         isCommentsVisible = !isCommentsVisible;
         commentsRecyclerView.setVisibility(isCommentsVisible ? View.VISIBLE : View.GONE);
-        commentsRecyclerView.setBackgroundColor(getResources().getColor(R.color.nmu_blue) );
+        commentEditText.setVisibility(isCommentsVisible ? View.VISIBLE : View.GONE);
+        submitCommentButton.setVisibility(isCommentsVisible ? View.VISIBLE : View.GONE);
+        commentsRecyclerView.setBackgroundColor(getResources().getColor(R.color.nmu_blue));
         updateCommentIcon();
     }
 

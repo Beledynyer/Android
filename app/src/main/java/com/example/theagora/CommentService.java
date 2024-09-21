@@ -7,5 +7,4 @@ import retrofit2.http.Query;
 public interface CommentService {
     @GET("api/Comment/GetCommentById")
     Call<Comment> getComment(@Query("id") int id);
-
 }
