@@ -1,6 +1,7 @@
 package com.example.theagora;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -26,14 +27,35 @@ public class ForumPostAdapter extends RecyclerView.Adapter<ForumPostAdapter.MyVi
 
     Context context;
 
+    Activity activity;
     User user;
     ArrayList<ForumPost> forumPosts;
 
     ForumPostService forumPostService;
     private  int lastPosition = -1;
 
-    public ForumPostAdapter(Context context,ArrayList<ForumPost> forumPosts,User user,ForumPostService forumPostService){
+    public interface OnPostActionListener {
+        void onPostBanned(int position);
+        void onPostApproved(int position);
+    }
+
+    private OnPostActionListener onPostActionListener;
+
+    public void setOnPostActionListener(OnPostActionListener listener) {
+        this.onPostActionListener = listener;
+    }
+
+    public void removePost(int position) {
+        if (position >= 0 && position < forumPosts.size()) {
+            forumPosts.remove(position);
+            notifyItemRemoved(position);
+            notifyItemRangeChanged(position, forumPosts.size());
+        }
+    }
+
+    public ForumPostAdapter(Activity context,ArrayList<ForumPost> forumPosts,User user,ForumPostService forumPostService){
         this.context = context;
+        activity = context;
         this.forumPosts = forumPosts;
         this.user =user;
         this.forumPostService = forumPostService;
@@ -43,7 +65,7 @@ public class ForumPostAdapter extends RecyclerView.Adapter<ForumPostAdapter.MyVi
     public ForumPostAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.recycler_view_row,parent,false);
-        return new ForumPostAdapter.MyViewHolder(view,forumPosts,this,forumPostService,this.user);
+        return new ForumPostAdapter.MyViewHolder(view,forumPosts,this,forumPostService,this.user,activity);
     }
 
     @SuppressLint("SetTextI18n")
@@ -76,7 +98,7 @@ public class ForumPostAdapter extends RecyclerView.Adapter<ForumPostAdapter.MyVi
         TextView name, title, tags;
         ImageView bin;
 
-        public MyViewHolder(@NonNull View itemView, ArrayList<ForumPost> forumPosts, ForumPostAdapter adapter,ForumPostService forumPostService,User user) {
+        public MyViewHolder(@NonNull View itemView, ArrayList<ForumPost> forumPosts, ForumPostAdapter adapter, ForumPostService forumPostService, User user, Activity context) {
             super(itemView);
 
             name = itemView.findViewById(R.id.forum_post_username);
@@ -84,19 +106,38 @@ public class ForumPostAdapter extends RecyclerView.Adapter<ForumPostAdapter.MyVi
             tags = itemView.findViewById(R.id.tags_view);
             bin = itemView.findViewById(R.id.bin_icon);
 
-            itemView.setOnClickListener(view -> {
-                int position = getAdapterPosition();
-                if (position != RecyclerView.NO_POSITION) {
-                    ForumPost post = forumPosts.get(position);
-                    int postId = post.getPostId();  // Get the post ID
+            if(user.isStaffMember()){
+                itemView.setOnClickListener(view -> {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        ForumPost post = forumPosts.get(position);
+                        int postId = post.getPostId();
 
-                    // Send only the post ID to ViewForumPostActivity
-                    Intent intent = new Intent(itemView.getContext(), ViewForumPostActivity.class);
-                    intent.putExtra("forumPostId", postId); // Pass the forumPost ID
-                    intent.putExtra("user", user);
-                    itemView.getContext().startActivity(intent);
-                }
-            });
+                        // Send only the post ID to ManagePostStatusActivity
+                        Intent intent = new Intent(itemView.getContext(), ManagePostStatusActivity.class);
+                        intent.putExtra("forumPostId", postId);
+                        intent.putExtra("position", position); // Add position to intent
+                        intent.putExtra("user", user);
+                        context.startActivityForResult(intent,2);
+                    }
+                });
+            }
+            else{
+                itemView.setOnClickListener(view -> {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        ForumPost post = forumPosts.get(position);
+                        int postId = post.getPostId();  // Get the post ID
+
+                        // Send only the post ID to ViewForumPostActivity
+                        Intent intent = new Intent(itemView.getContext(), ViewForumPostActivity.class);
+                        intent.putExtra("forumPostId", postId); // Pass the forumPost ID
+                        intent.putExtra("user", user);
+                        itemView.getContext().startActivity(intent);
+                    }
+                });
+            }
+
 
             bin.setOnClickListener(view -> {
                 String postTitle = title.getText().toString();

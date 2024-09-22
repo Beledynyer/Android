@@ -150,7 +150,7 @@ public class CreateForumPostActivity extends AppCompatActivity {
 
         if (isValid) {
             // Create ForumPost object
-            ForumPost post = new ForumPost(0,user.getId(),content,0,true,imageByteArray,tags,title);
+            ForumPost post = new ForumPost(0,user.getId(),content,0,false,imageByteArray,tags,title);
 
             // Convert ForumPost object to JSON string using Gson
             Gson gson = new Gson();
@@ -163,7 +163,7 @@ public class CreateForumPostActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<ForumPost> call, Response<ForumPost> response) {
                     if (response.isSuccessful()) {
-                        Toast.makeText(CreateForumPostActivity.this, "Post created successfully!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CreateForumPostActivity.this, "Post submitted successfully!", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent();
                         intent.putExtra("newPost", post);
                         setResult(RESULT_OK, intent);

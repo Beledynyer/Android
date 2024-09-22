@@ -5,13 +5,18 @@ import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 import java.util.List;
 
 public interface ForumPostService {
-    @GET("api/ForumPost/GetForumPosts")
-    Call<List<ForumPost>> getForumPosts();
+    @GET("api/ForumPost/GetApprovedForumPosts")
+    Call<List<ForumPost>> getApprovedForumPosts();
+
+    @GET("api/ForumPost/GetUnapprovedForumPosts")
+    Call<List<ForumPost>> getUnapprovedForumPosts();
 
     @POST("api/ForumPost/CreateForumPost")
     Call<ForumPost> createForumPost(@Body ForumPost post);
@@ -21,5 +26,7 @@ public interface ForumPostService {
 
     @DELETE("api/ForumPost/DeleteForumPost")
     Call<Void> deleteForumPost(@Query("id") int id);
-}
 
+    @PUT("api/ForumPost/ApproveForumPost/{id}")
+    Call<ForumPost> approveForumPost(@Path("id") int id);
+}

@@ -23,7 +23,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainPageActivity extends AppCompatActivity {
+public class MainPageActivity extends AppCompatActivity implements ForumPostAdapter.OnPostActionListener {
 
     ArrayList<ForumPost> forumPosts = new ArrayList<>();
     User user;
@@ -44,27 +44,36 @@ public class MainPageActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.mRecycleView);
         forumPostService = RetrofitClientInstance.getRetrofitInstance().create(ForumPostService.class);
         adapter = new ForumPostAdapter(this, forumPosts,user,forumPostService);
+        adapter.setOnPostActionListener(this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
         // Load all forum posts
         setUpForumPosts();
+
+
         FloatingActionButton fab;
         fab = findViewById(R.id.floatingActionButton);
 
-        // Hide/Show FloatingActionButton on scroll
-        recyclerView.addOnScrollListener(new HideShowScrollListener() {
-            @Override
-            public void onHide() {
-                fab.animate().setInterpolator(new AccelerateDecelerateInterpolator()).scaleX(0).scaleY(0);
-            }
+        if(user.isStaffMember()){
+            fab.setVisibility(View.GONE);
+        }
+        else{
+            // Hide/Show FloatingActionButton on scroll
+            recyclerView.addOnScrollListener(new HideShowScrollListener() {
+                @Override
+                public void onHide() {
+                    fab.animate().setInterpolator(new AccelerateDecelerateInterpolator()).scaleX(0).scaleY(0);
+                }
 
-            @Override
-            public void onShow() {
-                fab.animate().setInterpolator(new AccelerateDecelerateInterpolator()).scaleX(1).scaleY(1);
-            }
-        });
+                @Override
+                public void onShow() {
+                    fab.animate().setInterpolator(new AccelerateDecelerateInterpolator()).scaleX(1).scaleY(1);
+                }
+            });
+        }
+
 
     }
 
@@ -81,14 +90,30 @@ public class MainPageActivity extends AppCompatActivity {
 
         if (requestCode == 1 && resultCode == RESULT_OK && data != null) {
             setUpForumPosts();
+        } else if (requestCode == 2 && resultCode == RESULT_OK && data != null) {
+            int position = data.getIntExtra("position", -1);
+            boolean isBanned = data.getBooleanExtra("isBanned", false);
+            boolean isApproved = data.getBooleanExtra("isApproved", false);
+
+            if (position != -1) {
+                if (isBanned) {
+                    onPostBanned(position);
+                } else if (isApproved) {
+                    onPostApproved(position);
+                }
+            }
         }
     }
-
     private void setUpForumPosts() {
-        ForumPostService forumPostService = RetrofitClientInstance.getRetrofitInstance().create(ForumPostService.class);
         UserService userService = RetrofitClientInstance.getRetrofitInstance().create(UserService.class);
 
-        Call<List<ForumPost>> call = forumPostService.getForumPosts();
+        Call<List<ForumPost>> call;
+        if (user.isStaffMember()) {
+            call = forumPostService.getUnapprovedForumPosts();
+        } else {
+            call = forumPostService.getApprovedForumPosts();
+        }
+
         call.enqueue(new Callback<List<ForumPost>>() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
@@ -118,7 +143,7 @@ public class MainPageActivity extends AppCompatActivity {
                             }
 
                             @Override
-                            public void onFailure(Call<User> call, Throwable t) {
+                            public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
                                 Log.e("MainPageActivity", "Failed to load user details", t);
                                 loadedPosts[0]++;
                                 if (loadedPosts[0] == totalPosts) {
@@ -133,9 +158,23 @@ public class MainPageActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<List<ForumPost>> call, Throwable t) {
+            public void onFailure(@NonNull Call<List<ForumPost>> call, @NonNull Throwable t) {
                 Log.e("MainPageActivity", "Failed to load forum posts", t);
             }
         });
+    }
+
+
+
+    @Override
+    public void onPostBanned(int position) {
+        adapter.removePost(position);
+    }
+
+    @Override
+    public void onPostApproved(int position) {
+        if (user.isStaffMember()) {
+            adapter.removePost(position);
+        }
     }
 }
