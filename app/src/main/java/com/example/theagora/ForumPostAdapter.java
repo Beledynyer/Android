@@ -82,10 +82,14 @@ public class ForumPostAdapter extends RecyclerView.Adapter<ForumPostAdapter.MyVi
         }
         holder.title.setText(forumPosts.get(position).getTitle());
         holder.tags.setText(forumPosts.get(position).getTags());
-        assert forumPostUser != null;
-        if(forumPostUser.getId() == user.getId()) holder.bin.setVisibility(View.VISIBLE);
 
-        setAnimation(holder.itemView,position);
+        if (forumPostUser != null && forumPostUser.getId() == user.getId()) {
+            holder.bin.setVisibility(View.VISIBLE);
+        } else {
+            holder.bin.setVisibility(View.GONE);
+        }
+
+        setAnimation(holder.itemView, position);
     }
 
     @Override

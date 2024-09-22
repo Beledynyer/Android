@@ -80,17 +80,13 @@ public class MainPageActivity extends AppCompatActivity implements ForumPostAdap
     public void createForumPost(View v) {
         Intent i = new Intent(this, CreateForumPostActivity.class);
         i.putExtra("user", user);
-        //noinspection deprecation
-        startActivityForResult(i, 1);
+        startActivity(i);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == 1 && resultCode == RESULT_OK && data != null) {
-            setUpForumPosts();
-        } else if (requestCode == 2 && resultCode == RESULT_OK && data != null) {
+       if (requestCode == 2 && resultCode == RESULT_OK && data != null) {
             int position = data.getIntExtra("position", -1);
             boolean isBanned = data.getBooleanExtra("isBanned", false);
             boolean isApproved = data.getBooleanExtra("isApproved", false);
