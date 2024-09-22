@@ -216,4 +216,9 @@ public class ForumPostAdapter extends RecyclerView.Adapter<ForumPostAdapter.MyVi
 
         }
     }
+
+    public void filteredList(ArrayList<ForumPost> arr){
+        this.forumPosts = arr;
+        notifyDataSetChanged();
+    }
 }

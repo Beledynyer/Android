@@ -4,12 +4,16 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,6 +22,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -30,6 +36,7 @@ public class MainPageActivity extends AppCompatActivity implements ForumPostAdap
     ForumPostAdapter adapter;
     RecyclerView recyclerView;
     ForumPostService forumPostService;
+    SearchView searchView;
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +56,8 @@ public class MainPageActivity extends AppCompatActivity implements ForumPostAdap
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
+        searchView = findViewById(R.id.search);
+        setupSearchView();
         // Load all forum posts
         setUpForumPosts();
 
@@ -75,6 +84,52 @@ public class MainPageActivity extends AppCompatActivity implements ForumPostAdap
         }
 
 
+    }
+
+    private void setupSearchView() {
+        // Increase text size
+
+        int id = searchView.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
+        TextView textView = searchView.findViewById(id);
+        if (textView != null) {
+            textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 72); // Adjust this value as needed
+        }
+
+// Increase icon size
+        ImageView searchIcon = searchView.findViewById(androidx.appcompat.R.id.search_mag_icon);
+        ViewGroup.LayoutParams layoutParams = searchIcon.getLayoutParams();
+        layoutParams.width = 200; // Adjust this value to make the icon larger or smaller
+        layoutParams.height = 200; // Adjust this value to make the icon larger or smaller
+        searchIcon.setLayoutParams(layoutParams);
+
+// Optionally, adjust the padding to accommodate the larger icon
+        searchView.setPadding(16, searchView.getPaddingTop(), searchView.getPaddingRight(), searchView.getPaddingBottom());
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                filterPosts(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                filterPosts(newText);
+                return false;
+            }
+        });
+    }
+
+    private void filterPosts(String query) {
+        ArrayList<ForumPost>  filteredForumPosts = new ArrayList<>();
+        if (query.isEmpty()) {
+            filteredForumPosts.addAll(forumPosts);
+        } else {
+            String lowercaseQuery = query.toLowerCase(Locale.getDefault());
+            filteredForumPosts.addAll(forumPosts.stream()
+                    .filter(post -> post.getTitle().toLowerCase(Locale.getDefault()).contains(lowercaseQuery))
+                    .collect(Collectors.toList()));
+        }
+        adapter.filteredList(filteredForumPosts);
     }
 
     public void createForumPost(View v) {

@@ -9,4 +9,16 @@
         <item name="android:lineSpacingMultiplier">1.5</item>
         <item name="android:textAlignment">viewStart</item> <!-- Align text to the left -->
     </style>
+    <style name="SearchViewStyle" parent="Widget.AppCompat.SearchView">
+        <item name="android:textSize">30sp</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textColorHint">@android:color/black</item>
+        <item name="android:paddingStart">12dp</item>
+        <item name="android:paddingEnd">12dp</item>
+        <item name="queryBackground">@android:color/transparent</item>
+        <item name="searchIcon">@drawable/search_icon</item>
+        <item name="searchHintIcon">@null</item>
+        <item name="closeIcon">@null</item>
+        <item name="suggestionRowLayout">@null</item>
+    </style>
 </resources>
