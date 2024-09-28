@@ -1,6 +1,7 @@
 package com.example.theagora;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,7 +9,9 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -37,6 +40,11 @@ public class MainPageActivity extends AppCompatActivity implements ForumPostAdap
     RecyclerView recyclerView;
     ForumPostService forumPostService;
     SearchView searchView;
+
+    private ImageView filterIcon;
+    private ArrayList<String> selectedTags = new ArrayList<>();
+    private boolean showMyPosts = false;
+
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +63,8 @@ public class MainPageActivity extends AppCompatActivity implements ForumPostAdap
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
+        filterIcon = findViewById(R.id.filter_icon);
+        filterIcon.setOnClickListener(v -> showFilterDialog());
 
         searchView = findViewById(R.id.search);
         setupSearchView();
@@ -86,6 +96,56 @@ public class MainPageActivity extends AppCompatActivity implements ForumPostAdap
 
     }
 
+    private void showFilterDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View dialogView = getLayoutInflater().inflate(R.layout.filter_dialog, null);
+        builder.setView(dialogView);
+
+        CheckBox myPostsCheckbox = dialogView.findViewById(R.id.checkbox_my_posts);
+        CheckBox selectAllCheckbox = dialogView.findViewById(R.id.checkbox_select_all);
+        LinearLayout tagsContainer = dialogView.findViewById(R.id.tags_container);
+
+        String[] tagsArray = getResources().getStringArray(R.array.tags_array);
+        List<CheckBox> tagCheckboxes = new ArrayList<>();
+
+        for (String tag : tagsArray) {
+            CheckBox checkBox = new CheckBox(this);
+            checkBox.setText(tag);
+            checkBox.setChecked(selectedTags.contains(tag));
+            tagsContainer.addView(checkBox);
+            tagCheckboxes.add(checkBox);
+        }
+
+        selectAllCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            for (CheckBox checkBox : tagCheckboxes) {
+                checkBox.setChecked(isChecked);
+            }
+        });
+
+        myPostsCheckbox.setChecked(showMyPosts);
+
+        AlertDialog dialog = builder.create();
+
+        dialogView.findViewById(R.id.button_cancel).setOnClickListener(v -> dialog.dismiss());
+
+        dialogView.findViewById(R.id.button_filter).setOnClickListener(v -> {
+            showMyPosts = myPostsCheckbox.isChecked();
+            selectedTags.clear();
+            for (CheckBox checkBox : tagCheckboxes) {
+                if (checkBox.isChecked()) {
+                    selectedTags.add(checkBox.getText().toString());
+                }
+            }
+            applyFilters();
+            dialog.dismiss();
+        });
+
+        dialog.show();
+    }
+
+    private void applyFilters() {
+        adapter.filterList(selectedTags, showMyPosts);
+    }
     private void setupSearchView() {
         // Increase text size
 
@@ -190,6 +250,7 @@ public class MainPageActivity extends AppCompatActivity implements ForumPostAdap
                                 loadedPosts[0]++;
                                 if (loadedPosts[0] == totalPosts) {
                                     adapter.notifyDataSetChanged();  // Update the adapter after all users are set
+                                    applyFilters();
                                 }
                             }
 
@@ -199,6 +260,7 @@ public class MainPageActivity extends AppCompatActivity implements ForumPostAdap
                                 loadedPosts[0]++;
                                 if (loadedPosts[0] == totalPosts) {
                                     adapter.notifyDataSetChanged();  // Update the adapter after all users are set
+                                    applyFilters();
                                 }
                             }
                         });
