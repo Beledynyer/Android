@@ -225,7 +225,10 @@ public class CreateForumPostActivity extends AppCompatActivity {
         Button btnSubmit = dialogView.findViewById(R.id.btn_delete);
         btnSubmit.setText("Yes"); // Change the text of the button
         btnCancel.setText("No");
-        btnSubmit.setOnClickListener(view -> kill());
+        btnSubmit.setOnClickListener(view -> {
+            dialog.dismiss();
+            kill();
+        });
         btnCancel.setOnClickListener(view -> dialog.dismiss());
         dialog.show();
     }
