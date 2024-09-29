@@ -1,6 +1,8 @@
 package com.example.theagora;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -9,8 +11,10 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -149,38 +153,84 @@ public class CreateForumPostActivity extends AppCompatActivity {
         }
 
         if (isValid) {
-            // Create ForumPost object
-            ForumPost post = new ForumPost(0,user.getId(),content,0,false,imageByteArray,tags,title);
+            // Inflate the custom layout
+            LayoutInflater inflater = LayoutInflater.from(this);
+            View dialogView = inflater.inflate(R.layout.dialog_buttons, null);
 
-            // Convert ForumPost object to JSON string using Gson
-            Gson gson = new Gson();
-            String jsonPayload = gson.toJson(post);
-            Log.d("RetrofitRequest", "Request JSON: " + jsonPayload);
+            // Create the AlertDialog and set the custom view
+            AlertDialog dialog = new AlertDialog.Builder(this)
+                    .setTitle("Confirm submission")
+                    .setMessage("Are you sure you want to submit the post titled: \"" + title + "\"?")
+                    .setView(dialogView)
+                    .create();
 
-            // Make the API call to create the post
-            Call<ForumPost> call = forumPostService.createForumPost(post);
-            call.enqueue(new Callback<ForumPost>() {
-                @Override
-                public void onResponse(@NonNull Call<ForumPost> call, @NonNull Response<ForumPost> response) {
-                    if (response.isSuccessful()) {
-                        Toast.makeText(CreateForumPostActivity.this, "Post submitted successfully!", Toast.LENGTH_SHORT).show();
-                        finish();
-                    } else {
-                        Toast.makeText(CreateForumPostActivity.this, "Failed to create post.", Toast.LENGTH_SHORT).show();
+            // Get references to the buttons in the custom layout
+            Button btnCancel = dialogView.findViewById(R.id.btn_cancel);
+            Button btnSubmit = dialogView.findViewById(R.id.btn_delete);
+            btnSubmit.setText("Submit"); // Change the text of the button
+
+            // Set click listeners for the buttons
+            btnCancel.setOnClickListener(view -> dialog.dismiss());
+
+            btnSubmit.setOnClickListener(view -> {
+                // Create ForumPost object
+                ForumPost post = new ForumPost(0, user.getId(), content, 0, false, imageByteArray, tags, title);
+
+                // Convert ForumPost object to JSON string using Gson
+                Gson gson = new Gson();
+                String jsonPayload = gson.toJson(post);
+                Log.d("RetrofitRequest", "Request JSON: " + jsonPayload);
+
+                // Make the API call to create the post
+                Call<ForumPost> call = forumPostService.createForumPost(post);
+                call.enqueue(new Callback<ForumPost>() {
+                    @Override
+                    public void onResponse(@NonNull Call<ForumPost> call, @NonNull Response<ForumPost> response) {
+                        if (response.isSuccessful()) {
+                            Toast.makeText(CreateForumPostActivity.this, "Post submitted successfully!", Toast.LENGTH_SHORT).show();
+                            finish();
+                        } else {
+                            Toast.makeText(CreateForumPostActivity.this, "Failed to create post.", Toast.LENGTH_SHORT).show();
+                        }
                     }
-                }
 
-                @Override
-                public void onFailure(@NonNull Call<ForumPost> call, @NonNull Throwable t) {
-                    Toast.makeText(CreateForumPostActivity.this, "An error occurred: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                }
+                    @Override
+                    public void onFailure(@NonNull Call<ForumPost> call, @NonNull Throwable t) {
+                        Toast.makeText(CreateForumPostActivity.this, "An error occurred: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+                dialog.dismiss();
             });
+
+            // Show the dialog
+            dialog.show();
         } else {
             Toast.makeText(this, "Please fill in all the required fields", Toast.LENGTH_SHORT).show();
         }
     }
-
+    @SuppressLint("SetTextI18n")
     public void cancelPost(View v){
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View dialogView = inflater.inflate(R.layout.dialog_buttons, null);
+
+        // Create the AlertDialog and set the custom view
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("Cancel confirmation")
+                .setMessage("Are you sure you want to go back? All content entered will be discarded.")
+                .setView(dialogView)
+                .create();
+
+        // Get references to the buttons in the custom layout
+        Button btnCancel = dialogView.findViewById(R.id.btn_cancel);
+        Button btnSubmit = dialogView.findViewById(R.id.btn_delete);
+        btnSubmit.setText("Yes"); // Change the text of the button
+        btnCancel.setText("No");
+        btnSubmit.setOnClickListener(view -> kill());
+        btnCancel.setOnClickListener(view -> dialog.dismiss());
+        dialog.show();
+    }
+
+    private void kill() {
         finish();
     }
 }

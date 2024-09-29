@@ -41,7 +41,7 @@
             android:id="@+id/Create_forumPost_heading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="36dp"
             android:fontFamily="@font/montserrat_bold"
             android:text="Create Forum Post"
             android:textColor="@color/nmu_blue"
@@ -57,19 +57,20 @@
             android:layout_height="3dp"
             android:layout_marginTop="8dp"
             android:background="@color/nmu_blue"
-            app:layout_constraintEnd_toEndOf="@id/Create_forumPost_heading"
-            app:layout_constraintStart_toStartOf="@id/Create_forumPost_heading"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/Create_forumPost_heading" />
 
         <TextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:fontFamily="@font/montserrat_bold"
             android:text="Title"
             android:textColor="@color/nmu_blue"
             android:textSize="24sp"
-            app:layout_constraintStart_toStartOf="@+id/Content"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/create_underline" />
 
         <TextView
@@ -79,27 +80,21 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:text="*"
-            app:layout_constraintBottom_toTopOf="@+id/title_editText"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/title"
-            app:layout_constraintTop_toBottomOf="@id/Create_forumPost_heading"
-            app:layout_constraintVertical_bias="0.428" />
+            app:layout_constraintTop_toTopOf="@+id/title" />
 
         <EditText
             android:id="@+id/title_editText"
             android:layout_width="0dp"
             android:layout_height="48dp"
-            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:background="@drawable/white_box"
+            android:background="@android:drawable/edit_text"
             android:ems="10"
             android:hint="Enter title here"
             android:inputType="textPersonName"
             android:padding="10dp"
-            app:layout_constraintEnd_toEndOf="@id/Create_forumPost_heading"
-            app:layout_constraintStart_toStartOf="@id/Create_forumPost_heading"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/title" />
 
         <TextView
@@ -111,7 +106,7 @@
             android:text="Content"
             android:textColor="@color/nmu_blue"
             android:textSize="24sp"
-            app:layout_constraintStart_toStartOf="@id/Create_forumPost_heading"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/title_editText" />
 
         <TextView
@@ -128,11 +123,12 @@
             android:id="@+id/linearLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:orientation="vertical"
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
-            app:layout_constraintEnd_toEndOf="@id/title_editText"
-            app:layout_constraintStart_toStartOf="@id/title_editText"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/Content">
 
             <ImageView
@@ -147,11 +143,11 @@
                 android:id="@+id/content_editText"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
-                android:background="@drawable/white_box"
+                android:background="@android:drawable/edit_text"
+                android:gravity="top"
                 android:hint="Enter content here"
                 android:inputType="textMultiLine"
-                android:padding="10dp"
-                android:gravity="top" />
+                android:padding="10dp" />
 
             <View
                 android:id="@+id/separator"
@@ -165,30 +161,28 @@
                 android:layout_height="72dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
+                android:background="@drawable/btn_delete_background"
                 android:backgroundTint="@color/nmu_yellow"
                 android:drawableTop="@drawable/add_image"
                 android:fontFamily="@font/montserrat_bold"
                 android:gravity="center"
                 android:onClick="addImage"
                 android:text="Add image"
-                android:background="@drawable/btn_delete_background"
                 android:textColor="@android:color/black"
                 android:textSize="18sp" />
 
         </LinearLayout>
 
-        <!-- New Tags Section -->
         <TextView
             android:id="@+id/tags_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:fontFamily="@font/montserrat_bold"
             android:text="Tags"
             android:textColor="@color/nmu_blue"
             android:textSize="24sp"
-            app:layout_constraintStart_toStartOf="@id/Create_forumPost_heading"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/linearLayout" />
 
         <TextView
@@ -198,55 +192,47 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:text="*"
-            app:layout_constraintBottom_toTopOf="@+id/tags_spinner"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/tags_label"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+            app:layout_constraintTop_toTopOf="@+id/tags_label" />
 
         <Spinner
             android:id="@+id/tags_spinner"
             android:layout_width="0dp"
             android:layout_height="48dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:background="@drawable/white_box"
-            app:layout_constraintEnd_toEndOf="@id/Create_forumPost_heading"
-            app:layout_constraintStart_toStartOf="@id/Create_forumPost_heading"
+            android:background="@android:drawable/btn_dropdown"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tags_label" />
 
         <Button
             android:id="@+id/submit_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="52dp"
             android:layout_marginEnd="8dp"
+            android:background="@drawable/btn_delete_background"
             android:backgroundTint="@color/nmu_blue"
             android:fontFamily="@font/montserrat_bold"
             android:onClick="submitPost"
             android:text="Submit"
-            android:background="@drawable/btn_delete_background"
             android:textColor="@android:color/white"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tags_spinner" />
 
-        <!-- Cancel Button -->
         <Button
             android:id="@+id/cancel_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="24dp"
             android:layout_marginEnd="8dp"
+            android:background="@drawable/btn_delete_background"
             android:backgroundTint="@color/nmu_blue"
             android:fontFamily="@font/montserrat_bold"
             android:onClick="cancelPost"
             android:text="Cancel"
-            android:background="@drawable/btn_delete_background"
             android:textColor="@android:color/white"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/submit_button" />
 
