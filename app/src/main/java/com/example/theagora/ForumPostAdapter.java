@@ -14,6 +14,7 @@ import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -196,6 +197,7 @@ public class ForumPostAdapter extends RecyclerView.Adapter<ForumPostAdapter.MyVi
                                 if (response.isSuccessful()) {
                                     // Remove the item from the list and notify the adapter
                                     adapter.removePost(position);
+                                    Toast.makeText(context,"Forum post deleted successfully",Toast.LENGTH_LONG).show();
                                 } else {
                                     // Handle the case where the server responds with an error
                                     Log.e("ForumPostAdapter", "Failed to delete post: " + response.message());
