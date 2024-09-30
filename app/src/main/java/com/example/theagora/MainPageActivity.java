@@ -3,6 +3,10 @@ package com.example.theagora;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.VectorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
@@ -17,6 +21,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -45,6 +50,8 @@ public class MainPageActivity extends AppCompatActivity implements ForumPostAdap
     private ArrayList<String> selectedTags = new ArrayList<>();
     private boolean showMyPosts = false;
 
+    ImageView noResultsIcon ;
+
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,10 +74,10 @@ public class MainPageActivity extends AppCompatActivity implements ForumPostAdap
         filterIcon.setOnClickListener(v -> showFilterDialog());
 
         searchView = findViewById(R.id.search);
+        noResultsIcon = findViewById(R.id.no_results_icon);
         setupSearchView();
         // Load all forum posts
         setUpForumPosts();
-
 
         FloatingActionButton fab;
         fab = findViewById(R.id.floatingActionButton);
@@ -143,9 +150,6 @@ public class MainPageActivity extends AppCompatActivity implements ForumPostAdap
         dialog.show();
     }
 
-    private void applyFilters() {
-        adapter.filterList(selectedTags, showMyPosts);
-    }
     private void setupSearchView() {
         // Increase text size
 
@@ -180,7 +184,7 @@ public class MainPageActivity extends AppCompatActivity implements ForumPostAdap
     }
 
     private void filterPosts(String query) {
-        ArrayList<ForumPost>  filteredForumPosts = new ArrayList<>();
+        ArrayList<ForumPost> filteredForumPosts = new ArrayList<>();
         if (query.isEmpty()) {
             filteredForumPosts.addAll(forumPosts);
         } else {
@@ -190,7 +194,24 @@ public class MainPageActivity extends AppCompatActivity implements ForumPostAdap
                     .collect(Collectors.toList()));
         }
         adapter.filteredList(filteredForumPosts);
+        updateNoResultsVisibility(filteredForumPosts.isEmpty());
     }
+
+    private void applyFilters() {
+        adapter.filterList(selectedTags, showMyPosts);
+        updateNoResultsVisibility(adapter.getItemCount() == 0);
+    }
+
+    private void updateNoResultsVisibility(boolean showNoResults) {
+        if (showNoResults) {
+            noResultsIcon.setVisibility(View.VISIBLE);
+            noResultsIcon.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
+        } else {
+            noResultsIcon.setVisibility(View.GONE);
+        }
+    }
+
+
 
     public void createForumPost(View v) {
         Intent i = new Intent(this, CreateForumPostActivity.class);
@@ -289,5 +310,10 @@ public class MainPageActivity extends AppCompatActivity implements ForumPostAdap
         if (user.isStaffMember()) {
             adapter.removePost(position);
         }
+    }
+
+    @Override
+    public void onEmptyList() {
+
     }
 }

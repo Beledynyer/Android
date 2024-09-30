@@ -39,6 +39,7 @@ public class ForumPostAdapter extends RecyclerView.Adapter<ForumPostAdapter.MyVi
     public interface OnPostActionListener {
         void onPostBanned(int position);
         void onPostApproved(int position);
+        void onEmptyList();
     }
 
     private OnPostActionListener onPostActionListener;
@@ -68,6 +69,9 @@ public class ForumPostAdapter extends RecyclerView.Adapter<ForumPostAdapter.MyVi
             }
         }
         notifyDataSetChanged();
+        if (filteredForumPosts.isEmpty() && onPostActionListener != null) {
+            onPostActionListener.onEmptyList();
+        }
     }
 
     public ForumPostAdapter(Activity context, ArrayList<ForumPost> forumPosts, User user, ForumPostService forumPostService) {
@@ -238,8 +242,11 @@ public class ForumPostAdapter extends RecyclerView.Adapter<ForumPostAdapter.MyVi
         }
     }
 
-    public void filteredList(ArrayList<ForumPost> arr){
+    public void filteredList(ArrayList<ForumPost> arr) {
         this.filteredForumPosts = arr;
         notifyDataSetChanged();
+        if (filteredForumPosts.isEmpty() && onPostActionListener != null) {
+            onPostActionListener.onEmptyList();
+        }
     }
 }
