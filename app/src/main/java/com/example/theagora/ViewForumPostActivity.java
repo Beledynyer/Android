@@ -42,6 +42,7 @@ public class ViewForumPostActivity extends AppCompatActivity implements CommentD
     TextView userName, postTitle, postContent, likeCount, creatorView, commentCount;
     ImageView postImage, likeIcon, commentIcon;
     Button backFb;
+    private ForumPostService forumPostService;
     int postId;
     boolean isLiked = false;
 
@@ -83,7 +84,8 @@ public class ViewForumPostActivity extends AppCompatActivity implements CommentD
 
         // Initialize services
         likeService = RetrofitClientInstance.getRetrofitInstance().create(LikeService.class);
-        ForumPostService forumPostService = RetrofitClientInstance.getRetrofitInstance().create(ForumPostService.class);
+        forumPostService = RetrofitClientInstance.getRetrofitInstance().create(ForumPostService.class);
+
 
         // Fetch like count
         fetchLikeCount();
@@ -187,13 +189,37 @@ public class ViewForumPostActivity extends AppCompatActivity implements CommentD
             @Override
             public void onResponse(@NonNull Call<LikeCountResponse> call, @NonNull Response<LikeCountResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    likeCount.setText(String.valueOf(response.body().getCount()));
+                    int likeCount = response.body().getCount();
+                    updateLikeCountUI(likeCount);
+                    updateLikeCountInDatabase(likeCount);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<LikeCountResponse> call, @NonNull Throwable t) {
                 Toast.makeText(ViewForumPostActivity.this, "Failed to fetch like count", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void updateLikeCountUI(int count) {
+        likeCount.setText(String.valueOf(count));
+    }
+
+    private void updateLikeCountInDatabase(int count) {
+        forumPostService.updateNumberOfLikes(postId, count).enqueue(new Callback<ForumPost>() {
+            @Override
+            public void onResponse(@NonNull Call<ForumPost> call, @NonNull Response<ForumPost> response) {
+                if (response.isSuccessful()) {
+                    // Like count updated successfully in the database
+                } else {
+                    Toast.makeText(ViewForumPostActivity.this, "Failed to update like count in database", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ForumPost> call, @NonNull Throwable t) {
+                Toast.makeText(ViewForumPostActivity.this, "Error updating like count in database", Toast.LENGTH_SHORT).show();
             }
         });
     }

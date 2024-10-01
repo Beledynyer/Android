@@ -29,4 +29,7 @@ public interface ForumPostService {
 
     @PUT("api/ForumPost/ApproveForumPost/{id}")
     Call<ForumPost> approveForumPost(@Path("id") int id);
+
+    @PUT("api/ForumPost/UpdateNumberOfLikes/{id}")
+    Call<ForumPost> updateNumberOfLikes(@Path("id") int id, @Body int numberOfLikes);
 }

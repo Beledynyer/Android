@@ -29,9 +29,10 @@ public class ManagePostStatusActivity extends AppCompatActivity {
     private int postId;
 
     private TextView staffNameView, postCreatorNameView, postTitleView, postContentView;
-    private ImageView postImageView, banIcon, approveIcon;
-    private Button backButton;
+    private ImageView postImageView;
+    private Button banButton, approveButton, backButton;
 
+    ImageView userIcon;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +43,14 @@ public class ManagePostStatusActivity extends AppCompatActivity {
         // Retrieve the postId and User objects from the intent
         postId = getIntent().getIntExtra("forumPostId", -1);
         staffMember = getIntent().getParcelableExtra("user");
+        userIcon = findViewById(R.id.user_icon);
+
+        userIcon.setOnClickListener(v -> {
+            Intent intent = new Intent(ManagePostStatusActivity.this, LogOutActivity.class);
+            intent.putExtra("user", staffMember);
+            startActivity(intent);
+        });
+
 
         // Initialize UI elements
         initializeViews();
@@ -62,8 +71,8 @@ public class ManagePostStatusActivity extends AppCompatActivity {
         postTitleView = findViewById(R.id.post_title);
         postContentView = findViewById(R.id.post_content);
         postImageView = findViewById(R.id.post_image);
-        banIcon = findViewById(R.id.ban_icon);
-        approveIcon = findViewById(R.id.approve_icon);
+        banButton = findViewById(R.id.ban_button);
+        approveButton = findViewById(R.id.approve_button);
         backButton = findViewById(R.id.back_button);
     }
 
@@ -138,8 +147,8 @@ public class ManagePostStatusActivity extends AppCompatActivity {
     }
 
     private void setupClickListeners() {
-        banIcon.setOnClickListener(v -> showBanDialog());
-        approveIcon.setOnClickListener(v -> showApproveDialog());
+        banButton.setOnClickListener(v -> showBanDialog());
+        approveButton.setOnClickListener(v -> showApproveDialog());
         backButton.setOnClickListener(v -> finish());
     }
 

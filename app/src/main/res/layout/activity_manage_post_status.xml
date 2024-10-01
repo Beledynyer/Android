@@ -77,7 +77,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="16dp"
         android:fillViewport="true"
-        app:layout_constraintBottom_toTopOf="@+id/back_button"
+        app:layout_constraintBottom_toTopOf="@+id/ban_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/user_info_border">
@@ -159,49 +159,50 @@
                 app:layout_constraintTop_toBottomOf="@id/post_content" />
 
             <!-- Management Actions Section -->
-            <LinearLayout
-                android:id="@+id/management_actions"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:orientation="horizontal"
-                android:padding="16dp"
-                android:background="@color/nmu_blue"
-                app:layout_constraintTop_toBottomOf="@id/post_image">
 
-                <!-- Ban Icon -->
-
-                <!-- Approve Icon -->
-
-                <ImageView
-                    android:id="@+id/ban_icon"
-                    android:layout_width="40dp"
-                    android:layout_height="50dp"
-                    android:layout_weight="1"
-                    android:src="@drawable/ban_icon" />
-
-                <ImageView
-                    android:id="@+id/approve_icon"
-                    android:layout_width="40dp"
-                    android:layout_height="50dp"
-                    android:layout_weight="1"
-                    android:src="@drawable/approve_icon" />
-
-            </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.core.widget.NestedScrollView>
+    <Button
+        android:id="@+id/ban_button"
+        android:layout_width="0dp"
+        android:layout_height="46dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/btn_cancel_background"
+        android:text="Ban"
+        android:backgroundTint="@color/nmu_blue"
+        android:textColor="@android:color/white"
+        app:layout_constraintBottom_toTopOf="@+id/back_button"
+        app:layout_constraintEnd_toStartOf="@+id/approve_button"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- Approve Button -->
+    <Button
+        android:id="@+id/approve_button"
+        android:layout_width="0dp"
+        android:layout_height="46dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/btn_cancel_background"
+        android:backgroundTint="@color/nmu_blue"
+        android:text="Approve"
+        android:textColor="@android:color/white"
+        app:layout_constraintBottom_toTopOf="@+id/back_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/ban_button" />
 
     <!-- Back Button -->
     <Button
         android:id="@+id/back_button"
-        android:layout_width="184dp"
-        android:layout_height="65dp"
+        android:layout_width="358dp"
+        android:layout_height="46dp"
         android:layout_marginBottom="16dp"
         android:background="@drawable/btn_delete_background"
         android:text="Back"
-        android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

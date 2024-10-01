@@ -5,8 +5,6 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.VectorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
@@ -21,7 +19,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
-import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -51,6 +48,7 @@ public class MainPageActivity extends AppCompatActivity implements ForumPostAdap
     private boolean showMyPosts = false;
 
     ImageView noResultsIcon ;
+    ImageView userIcon;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -75,12 +73,18 @@ public class MainPageActivity extends AppCompatActivity implements ForumPostAdap
 
         searchView = findViewById(R.id.search);
         noResultsIcon = findViewById(R.id.no_results_icon);
+        userIcon = findViewById(R.id.user_icon);
         setupSearchView();
         // Load all forum posts
         setUpForumPosts();
 
         FloatingActionButton fab;
         fab = findViewById(R.id.floatingActionButton);
+        userIcon.setOnClickListener(v -> {
+            Intent intent = new Intent(MainPageActivity.this, LogOutActivity.class);
+            intent.putExtra("user", user);
+            startActivity(intent);
+        });
 
         if(user.isStaffMember()){
             fab.setVisibility(View.GONE);
