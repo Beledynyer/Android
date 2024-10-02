@@ -1,5 +1,6 @@
 package com.example.theagora;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -19,7 +20,6 @@ public class LogOutActivity extends AppCompatActivity {
     private TextView phoneNumberTextView;
     private Button backButton;
     private Button logoutButton;
-
     private ImageView userIcon;
 
     @Override
@@ -57,13 +57,43 @@ public class LogOutActivity extends AppCompatActivity {
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Perform logout operations (e.g., clear session, remove stored credentials)
-                // For this example, we'll just navigate to the LoginActivity
-                Intent intent = new Intent(LogOutActivity.this, LoginActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-                finish();
+                showLogoutConfirmationDialog();
             }
         });
+    }
+
+    private void showLogoutConfirmationDialog() {
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_buttons, null);
+
+        // Create the AlertDialog and set the custom view
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("Logout Confirmation")
+                .setMessage("Are you sure you want to log out?")
+                .setView(dialogView)
+                .create();
+
+        // Get references to the buttons in the custom layout
+        Button btnCancel = dialogView.findViewById(R.id.btn_cancel);
+        Button btnLogout = dialogView.findViewById(R.id.btn_delete);
+        btnLogout.setText("Logout"); // Change the text of the button
+        btnCancel.setText("Cancel");
+
+        btnLogout.setOnClickListener(view -> {
+            dialog.dismiss();
+            performLogout();
+        });
+
+        btnCancel.setOnClickListener(view -> dialog.dismiss());
+
+        dialog.show();
+    }
+
+    private void performLogout() {
+        // Perform logout operations (e.g., clear session, remove stored credentials)
+        // For this example, we'll just navigate to the LoginActivity
+        Intent intent = new Intent(LogOutActivity.this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 }

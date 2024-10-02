@@ -1,6 +1,7 @@
 package com.example.theagora;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
@@ -18,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.widget.ImageViewCompat;
+import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -57,6 +59,8 @@ public class ViewForumPostActivity extends AppCompatActivity implements CommentD
     EditText commentEditText;
     Button submitCommentButton;
 
+    private NestedScrollView nestedScrollView;
+
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +79,8 @@ public class ViewForumPostActivity extends AppCompatActivity implements CommentD
         commentCount = findViewById(R.id.comment_counter);
         backFb = findViewById(R.id.floatingActionButton2);
         backFb.setOnClickListener(v -> finish());
+        nestedScrollView = findViewById(R.id.nested_scroll_view);
+
 
         Intent userAndPost = getIntent();
         user = userAndPost.getParcelableExtra("user");
@@ -122,47 +128,74 @@ public class ViewForumPostActivity extends AppCompatActivity implements CommentD
     private void submitComment() {
         String commentContent = commentEditText.getText().toString().trim();
         if (!commentContent.isEmpty()) {
-            CommentDto commentDto = new CommentDto(commentContent, user.getId(), postId);
+            // Inflate the custom layout for the dialog
+            View dialogView = getLayoutInflater().inflate(R.layout.dialog_buttons, null);
 
-            forumCommentService.addComment(commentDto).enqueue(new Callback<ForumComment>() {
-                @Override
-                public void onResponse(@NonNull Call<ForumComment> call, @NonNull Response<ForumComment> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        ForumComment createdForumComment = response.body();
-                        // Now fetch the Comment using the CommentService
-                        commentService.getComment(createdForumComment.getCommentId()).enqueue(new Callback<Comment>() {
-                            @Override
-                            public void onResponse(@NonNull Call<Comment> call, @NonNull Response<Comment> response) {
-                                if (response.isSuccessful() && response.body() != null) {
-                                    Comment createdComment = response.body();
-                                    createdComment.setUser(user);
-                                    comments.add(createdComment);
-                                    updateCommentAdapter();
-                                    commentEditText.setText("");
-                                    Toast.makeText(ViewForumPostActivity.this, "Comment added successfully", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Toast.makeText(ViewForumPostActivity.this, "Failed to fetch comment details", Toast.LENGTH_SHORT).show();
-                                }
-                            }
+            // Create the AlertDialog and set the custom view
+            AlertDialog dialog = new AlertDialog.Builder(this)
+                    .setTitle("Submit Comment")
+                    .setMessage("Are you sure you want to submit this comment?")
+                    .setView(dialogView)
+                    .create();
 
-                            @Override
-                            public void onFailure(@NonNull Call<Comment> call, @NonNull Throwable t) {
-                                Toast.makeText(ViewForumPostActivity.this, "Failed to fetch comment details", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    } else {
-                        Toast.makeText(ViewForumPostActivity.this, "Failed to add comment", Toast.LENGTH_SHORT).show();
-                    }
-                }
+            // Get references to the buttons in the custom layout
+            Button btnCancel = dialogView.findViewById(R.id.btn_cancel);
+            Button btnSubmit = dialogView.findViewById(R.id.btn_delete);
+            btnSubmit.setText("Submit"); // Change the text of the button
+            btnCancel.setText("Cancel");
 
-                @Override
-                public void onFailure(@NonNull Call<ForumComment> call, @NonNull Throwable t) {
-                    Toast.makeText(ViewForumPostActivity.this, "Failed to add comment", Toast.LENGTH_SHORT).show();
-                }
+            btnSubmit.setOnClickListener(view -> {
+                dialog.dismiss();
+                submitCommentToServer(commentContent);
             });
+
+            btnCancel.setOnClickListener(view -> dialog.dismiss());
+
+            dialog.show();
         } else {
             Toast.makeText(this, "Please enter a comment", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void submitCommentToServer(String commentContent) {
+        CommentDto commentDto = new CommentDto(commentContent, user.getId(), postId);
+
+        forumCommentService.addComment(commentDto).enqueue(new Callback<ForumComment>() {
+            @Override
+            public void onResponse(@NonNull Call<ForumComment> call, @NonNull Response<ForumComment> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    ForumComment createdForumComment = response.body();
+                    // Now fetch the Comment using the CommentService
+                    commentService.getComment(createdForumComment.getCommentId()).enqueue(new Callback<Comment>() {
+                        @Override
+                        public void onResponse(@NonNull Call<Comment> call, @NonNull Response<Comment> response) {
+                            if (response.isSuccessful() && response.body() != null) {
+                                Comment createdComment = response.body();
+                                createdComment.setUser(user);
+                                comments.add(createdComment);
+                                updateCommentAdapter();
+                                commentEditText.setText("");
+                                Toast.makeText(ViewForumPostActivity.this, "Comment added successfully", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(ViewForumPostActivity.this, "Failed to fetch comment details", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(@NonNull Call<Comment> call, @NonNull Throwable t) {
+                            Toast.makeText(ViewForumPostActivity.this, "Failed to fetch comment details", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } else {
+                    Toast.makeText(ViewForumPostActivity.this, "Failed to add comment", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ForumComment> call, @NonNull Throwable t) {
+                Toast.makeText(ViewForumPostActivity.this, "Failed to add comment", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 
@@ -174,6 +207,12 @@ public class ViewForumPostActivity extends AppCompatActivity implements CommentD
         submitCommentButton.setVisibility(isCommentsVisible ? View.VISIBLE : View.GONE);
         commentsRecyclerView.setBackgroundColor(getResources().getColor(R.color.nmu_blue));
         updateCommentIcon();
+
+
+        if (isCommentsVisible) {
+            // Scroll to the bottom of the NestedScrollView
+            nestedScrollView.post(() -> nestedScrollView.fullScroll(View.FOCUS_DOWN));
+        }
     }
 
     private void updateCommentIcon() {
