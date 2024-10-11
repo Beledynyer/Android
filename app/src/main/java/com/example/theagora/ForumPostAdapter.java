@@ -20,6 +20,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -68,6 +70,7 @@ public class ForumPostAdapter extends RecyclerView.Adapter<ForumPostAdapter.MyVi
                 filteredForumPosts.add(post);
             }
         }
+        sortPosts();
         notifyDataSetChanged();
         if (filteredForumPosts.isEmpty() && onPostActionListener != null) {
             onPostActionListener.onEmptyList();
@@ -169,47 +172,43 @@ public class ForumPostAdapter extends RecyclerView.Adapter<ForumPostAdapter.MyVi
             bin.setOnClickListener(view -> {
                 String postTitle = title.getText().toString();
 
-                // Inflate the custom layout
                 LayoutInflater inflater = LayoutInflater.from(itemView.getContext());
                 View dialogView = inflater.inflate(R.layout.dialog_buttons, null);
 
-                // Create the AlertDialog and set the custom view
                 AlertDialog dialog = new AlertDialog.Builder(itemView.getContext())
                         .setTitle("Confirm delete")
                         .setMessage("Are you sure you want to delete the post titled: \"" + postTitle + "\"?")
                         .setView(dialogView)
                         .create();
 
-                // Get references to the buttons in the custom layout
+
                 Button btnCancel = dialogView.findViewById(R.id.btn_cancel);
                 Button btnDelete = dialogView.findViewById(R.id.btn_delete);
 
-                // Set click listeners for the buttons
+
                 btnCancel.setOnClickListener(v -> dialog.dismiss());
 
                 btnDelete.setOnClickListener(v -> {
-                    // Perform the delete action
                     int position = getAdapterPosition();
                     if (position != RecyclerView.NO_POSITION) {
                         ForumPost postToDelete = adapter.filteredForumPosts.get(position);
                         int postId = postToDelete.getPostId();
 
-                        // Call API to delete the post from the database
                         forumPostService.deleteForumPost(postId).enqueue(new Callback<Void>() {
                             @Override
                             public void onResponse(Call<Void> call, Response<Void> response) {
                                 if (response.isSuccessful()) {
-                                    // Remove the item from the list and notify the adapter
+
                                     adapter.removePost(position);
                                     Toast.makeText(context,"Forum post deleted successfully",Toast.LENGTH_LONG).show();
                                 } else {
-                                    // Handle the case where the server responds with an error
+
                                     Log.e("ForumPostAdapter", "Failed to delete post: " + response.message());
                                 }
                             }
                             @Override
                             public void onFailure(Call<Void> call, Throwable t) {
-                                // Handle the error here (e.g., show a message to the user)
+
                                 Log.e("ForumPostAdapter", "Error deleting post", t);
                             }
                         });
@@ -242,11 +241,26 @@ public class ForumPostAdapter extends RecyclerView.Adapter<ForumPostAdapter.MyVi
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void filteredList(ArrayList<ForumPost> arr) {
+        this.forumPosts = new ArrayList<>(arr); // Update the main list
         this.filteredForumPosts = arr;
+        sortPosts(); // Sort both lists
         notifyDataSetChanged();
         if (filteredForumPosts.isEmpty() && onPostActionListener != null) {
             onPostActionListener.onEmptyList();
         }
+    }
+
+    private void sortPosts() {
+        Comparator<ForumPost> titleComparator = new Comparator<ForumPost>() {
+            @Override
+            public int compare(ForumPost post1, ForumPost post2) {
+                return post1.getTitle().compareToIgnoreCase(post2.getTitle());
+            }
+        };
+
+        Collections.sort(forumPosts, titleComparator);
+        Collections.sort(filteredForumPosts, titleComparator);
     }
 }

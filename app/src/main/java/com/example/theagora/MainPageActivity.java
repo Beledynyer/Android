@@ -26,6 +26,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -194,7 +196,7 @@ public class MainPageActivity extends AppCompatActivity implements ForumPostAdap
         } else {
             String lowercaseQuery = query.toLowerCase(Locale.getDefault());
             filteredForumPosts.addAll(forumPosts.stream()
-                    .filter(post -> post.getTitle().toLowerCase(Locale.getDefault()).contains(lowercaseQuery))
+                    .filter(post -> post.getTitle().toLowerCase(Locale.getDefault()).startsWith(lowercaseQuery))
                     .collect(Collectors.toList()));
         }
         adapter.filteredList(filteredForumPosts);
@@ -274,7 +276,13 @@ public class MainPageActivity extends AppCompatActivity implements ForumPostAdap
                                 }
                                 loadedPosts[0]++;
                                 if (loadedPosts[0] == totalPosts) {
-                                    adapter.notifyDataSetChanged();  // Update the adapter after all users are set
+                                    Collections.sort(forumPosts, new Comparator<ForumPost>() {
+                                        @Override
+                                        public int compare(ForumPost post1, ForumPost post2) {
+                                            return post1.getTitle().compareToIgnoreCase(post2.getTitle());
+                                        }
+                                    });
+                                    adapter.filteredList(new ArrayList<>(forumPosts));  // Update the adapter with sorted posts
                                     applyFilters();
                                 }
                             }
