@@ -104,41 +104,54 @@ public class CreateForumPostActivity extends AppCompatActivity {
 
 
     public void addImage(View v) {
+        // Clear both the ImageView and the stored image data
         im.setImageBitmap(null);
+        im.setVisibility(View.GONE); // Hide the ImageView when clearing
+        imageByteArray = null; // Clear the stored image data
+
         // Initialize intent
-        Intent intent=new Intent(Intent.ACTION_PICK);
+        Intent intent = new Intent(Intent.ACTION_PICK);
         // set type
         intent.setType("image/*");
         // start activity result
         //noinspection deprecation
-        startActivityForResult(Intent.createChooser(intent,"Select Image"),1);
+        startActivityForResult(Intent.createChooser(intent, "Select Image"), 1);
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == 1 && resultCode == RESULT_OK && data != null && data.getData() != null) {
+        if (requestCode == 1) {
+            if (resultCode == RESULT_OK && data != null && data.getData() != null) {
+                // Get the URI of the selected image
+                Uri imageUri = data.getData();
+                im.setVisibility(View.VISIBLE);
+                im.setImageURI(imageUri); // Set the image to ImageView
 
-
-            // Get the URI of the selected image
-            Uri imageUri = data.getData();
-            im.setVisibility(View.VISIBLE);
-            im.setImageURI(imageUri); // Set the image to ImageView
-            Bitmap bitmap= null;
-            try {
-                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),imageUri);
-                ByteArrayOutputStream stream=new ByteArrayOutputStream();
-                // compress Bitmap
-                bitmap.compress(Bitmap.CompressFormat.JPEG,100,stream);
-                // Initialize byte array
-                byte[] bytes=stream.toByteArray();
-                // get base64 encoded string
-                imageByteArray = Base64.encodeToString(bytes,Base64.NO_WRAP);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+                try {
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    // compress Bitmap
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                    // Initialize byte array
+                    byte[] bytes = stream.toByteArray();
+                    // get base64 encoded string
+                    imageByteArray = Base64.encodeToString(bytes, Base64.NO_WRAP);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                // If user cancelled or there was an error
+                if (imageByteArray == null) {
+                    // Only hide the ImageView if there was no previous image
+                    im.setVisibility(View.GONE);
+                } else {
+                    // If there was a previous image, restore it
+                    im.setVisibility(View.VISIBLE);
+                    // You might want to show the previous image preview here if needed
+                }
             }
-            // initialize byte stream
-
         }
     }
     @Override
