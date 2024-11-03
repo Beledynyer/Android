@@ -21,7 +21,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -29,14 +28,13 @@ import retrofit2.Response;
 
 public class ForumPostAdapter extends RecyclerView.Adapter<ForumPostAdapter.MyViewHolder> {
 
-    Context context;
-
-    Activity activity;
-    User user;
-    ArrayList<ForumPost> forumPosts;
-    ArrayList<ForumPost> filteredForumPosts;
-    ForumPostService forumPostService;
-    private  int lastPosition = -1;
+    private final Context context;
+    private final Activity activity;
+    private final User user;
+    private final ArrayList<ForumPost> originalPosts;
+    private final ArrayList<ForumPost> filteredPosts;
+    private final ForumPostService forumPostService;
+    private int lastPosition = -1;
 
     public interface OnPostActionListener {
         void onPostBanned(int position);
@@ -50,53 +48,27 @@ public class ForumPostAdapter extends RecyclerView.Adapter<ForumPostAdapter.MyVi
         this.onPostActionListener = listener;
     }
 
-    public void removePost(int position) {
-        if (position >= 0 && position < filteredForumPosts.size()) {
-            ForumPost removedPost = filteredForumPosts.get(position);
-            filteredForumPosts.remove(position);
-            forumPosts.remove(removedPost);
-            notifyItemRemoved(position);
-            notifyItemRangeChanged(position, filteredForumPosts.size());
-        }
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    public void filterList(ArrayList<String> selectedTags, boolean showMyPosts) {
-        filteredForumPosts.clear();
-        for (ForumPost post : forumPosts) {
-            boolean matchesTags = selectedTags.isEmpty() || selectedTags.contains(post.getTags());
-            boolean matchesUser = !showMyPosts || post.getUserId() == user.getId();
-            if (matchesTags && matchesUser) {
-                filteredForumPosts.add(post);
-            }
-        }
-        sortPosts();
-        notifyDataSetChanged();
-        if (filteredForumPosts.isEmpty() && onPostActionListener != null) {
-            onPostActionListener.onEmptyList();
-        }
-    }
-
     public ForumPostAdapter(Activity context, ArrayList<ForumPost> forumPosts, User user, ForumPostService forumPostService) {
         this.context = context;
-        activity = context;
-        this.forumPosts = forumPosts;
-        this.filteredForumPosts = new ArrayList<>(forumPosts);
+        this.activity = context;
+        this.originalPosts = new ArrayList<>(forumPosts);
+        this.filteredPosts = new ArrayList<>(forumPosts);
         this.user = user;
         this.forumPostService = forumPostService;
     }
+
     @NonNull
     @Override
-    public ForumPostAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.recycler_view_row,parent,false);
-        return new ForumPostAdapter.MyViewHolder(view,forumPosts,this,forumPostService,this.user,activity);
+        View view = inflater.inflate(R.layout.recycler_view_row, parent, false);
+        return new MyViewHolder(view, originalPosts, this, forumPostService, this.user, activity);
     }
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(@NonNull ForumPostAdapter.MyViewHolder holder, int position) {
-        ForumPost forumPost = filteredForumPosts.get(position);
+    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+        ForumPost forumPost = filteredPosts.get(position);
         User forumPostUser = forumPost.getUser();
         if (forumPostUser != null) {
             if(forumPostUser.getId() == user.getId() || !forumPost.getTags().equals("Anonymous")){
@@ -119,9 +91,68 @@ public class ForumPostAdapter extends RecyclerView.Adapter<ForumPostAdapter.MyVi
 
     @Override
     public int getItemCount() {
-        return filteredForumPosts.size();
+        return filteredPosts.size();
     }
 
+    public void removePost(int position) {
+        if (position >= 0 && position < filteredPosts.size()) {
+            ForumPost removedPost = filteredPosts.get(position);
+            filteredPosts.remove(position);
+            originalPosts.remove(removedPost);
+            notifyItemRemoved(position);
+            notifyItemRangeChanged(position, filteredPosts.size());
+        }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void filterList(ArrayList<String> selectedTags, boolean showMyPosts) {
+        filteredPosts.clear();
+        for (ForumPost post : originalPosts) {
+            boolean matchesTags = selectedTags.isEmpty() || selectedTags.contains(post.getTags());
+            boolean matchesUser = !showMyPosts || post.getUserId() == user.getId();
+            if (matchesTags && matchesUser) {
+                filteredPosts.add(post);
+            }
+        }
+        sortPosts();
+        notifyDataSetChanged();
+        if (filteredPosts.isEmpty() && onPostActionListener != null) {
+            onPostActionListener.onEmptyList();
+        }
+    }
+
+    public void add(ForumPost p) {
+        originalPosts.add(p);
+        filteredPosts.add(p);
+        notifyItemInserted(filteredPosts.size() - 1);
+    }
+
+    private void setAnimation(View viewToAnimate, int position) {
+        if (position > lastPosition) {
+            ScaleAnimation anim = new ScaleAnimation(0.0f, 1.0f, 0.0f, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+            anim.setDuration(550);
+            viewToAnimate.startAnimation(anim);
+            lastPosition = position;
+        }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void filteredList(ArrayList<ForumPost> arr) {
+        originalPosts.clear();
+        originalPosts.addAll(arr);
+        filteredPosts.clear();
+        filteredPosts.addAll(arr);
+        sortPosts();
+        notifyDataSetChanged();
+        if (filteredPosts.isEmpty() && onPostActionListener != null) {
+            onPostActionListener.onEmptyList();
+        }
+    }
+
+    private void sortPosts() {
+        Collections.sort(filteredPosts, (post1, post2) ->
+                post1.getTitle().compareToIgnoreCase(post2.getTitle()));
+    }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
 
@@ -140,34 +171,30 @@ public class ForumPostAdapter extends RecyclerView.Adapter<ForumPostAdapter.MyVi
                 itemView.setOnClickListener(view -> {
                     int position = getAdapterPosition();
                     if (position != RecyclerView.NO_POSITION) {
-                        ForumPost post = forumPosts.get(position);
+                        ForumPost post = adapter.filteredPosts.get(position);
                         int postId = post.getPostId();
 
-                        // Send only the post ID to ManagePostStatusActivity
                         Intent intent = new Intent(itemView.getContext(), ManagePostStatusActivity.class);
                         intent.putExtra("forumPostId", postId);
-                        intent.putExtra("position", position); // Add position to intent
+                        intent.putExtra("position", position);
                         intent.putExtra("user", user);
                         context.startActivityForResult(intent,2);
                     }
                 });
-            }
-            else{
+            } else {
                 itemView.setOnClickListener(view -> {
                     int position = getAdapterPosition();
                     if (position != RecyclerView.NO_POSITION) {
-                        ForumPost post = forumPosts.get(position);
-                        int postId = post.getPostId();  // Get the post ID
+                        ForumPost post = adapter.filteredPosts.get(position);
+                        int postId = post.getPostId();
 
-                        // Send only the post ID to ViewForumPostActivity
                         Intent intent = new Intent(itemView.getContext(), ViewForumPostActivity.class);
-                        intent.putExtra("forumPostId", postId); // Pass the forumPost ID
+                        intent.putExtra("forumPostId", postId);
                         intent.putExtra("user", user);
                         itemView.getContext().startActivity(intent);
                     }
                 });
             }
-
 
             bin.setOnClickListener(view -> {
                 String postTitle = title.getText().toString();
@@ -181,34 +208,30 @@ public class ForumPostAdapter extends RecyclerView.Adapter<ForumPostAdapter.MyVi
                         .setView(dialogView)
                         .create();
 
-
                 Button btnCancel = dialogView.findViewById(R.id.btn_cancel);
                 Button btnDelete = dialogView.findViewById(R.id.btn_delete);
-
 
                 btnCancel.setOnClickListener(v -> dialog.dismiss());
 
                 btnDelete.setOnClickListener(v -> {
                     int position = getAdapterPosition();
                     if (position != RecyclerView.NO_POSITION) {
-                        ForumPost postToDelete = adapter.filteredForumPosts.get(position);
+                        ForumPost postToDelete = adapter.filteredPosts.get(position);
                         int postId = postToDelete.getPostId();
 
                         forumPostService.deleteForumPost(postId).enqueue(new Callback<Void>() {
                             @Override
                             public void onResponse(Call<Void> call, Response<Void> response) {
                                 if (response.isSuccessful()) {
-
                                     adapter.removePost(position);
                                     Toast.makeText(context,"Forum post deleted successfully",Toast.LENGTH_LONG).show();
                                 } else {
-
                                     Log.e("ForumPostAdapter", "Failed to delete post: " + response.message());
                                 }
                             }
+
                             @Override
                             public void onFailure(Call<Void> call, Throwable t) {
-
                                 Log.e("ForumPostAdapter", "Error deleting post", t);
                             }
                         });
@@ -216,51 +239,8 @@ public class ForumPostAdapter extends RecyclerView.Adapter<ForumPostAdapter.MyVi
                     dialog.dismiss();
                 });
 
-                // Show the dialog
                 dialog.show();
             });
-
         }
-    }
-
-    public  void add(ForumPost p){
-        forumPosts.add(p);
-        notifyItemChanged(forumPosts.size()-1);
-    }
-
-    private void setAnimation(View viewToAnimate, int position) {
-        // If the bound view wasn't previously displayed on screen, it's animated
-        if (position > lastPosition) {
-            //TranslateAnimation anim = new TranslateAnimation(0,-1000,0,-1000);
-            ScaleAnimation anim = new ScaleAnimation(0.0f, 1.0f, 0.0f, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-            //anim.setDuration(new Random().nextInt(501));//to make duration random number between [0,501)
-            anim.setDuration(550);//to make duration random number between [0,501)
-            viewToAnimate.startAnimation(anim);
-            lastPosition = position;
-
-        }
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    public void filteredList(ArrayList<ForumPost> arr) {
-        this.forumPosts = new ArrayList<>(arr); // Update the main list
-        this.filteredForumPosts = arr;
-        sortPosts(); // Sort both lists
-        notifyDataSetChanged();
-        if (filteredForumPosts.isEmpty() && onPostActionListener != null) {
-            onPostActionListener.onEmptyList();
-        }
-    }
-
-    private void sortPosts() {
-        Comparator<ForumPost> titleComparator = new Comparator<ForumPost>() {
-            @Override
-            public int compare(ForumPost post1, ForumPost post2) {
-                return post1.getTitle().compareToIgnoreCase(post2.getTitle());
-            }
-        };
-
-        Collections.sort(forumPosts, titleComparator);
-        Collections.sort(filteredForumPosts, titleComparator);
     }
 }
