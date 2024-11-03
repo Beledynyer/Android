@@ -63,11 +63,11 @@ public class RegisterActivity extends AppCompatActivity {
         password_star = findViewById(R.id.password_star);
         password_star.setVisibility(View.GONE);
         confirm_password_star = findViewById(R.id.confirm_password_star);
-        password_star.setVisibility(View.GONE);
         confirm_password_star.setVisibility(View.GONE);
 
         userService = RetrofitClientInstance.getRetrofitInstance().create(UserService.class);
 
+        // Password visibility toggles remain the same
         passwordEditText.setOnTouchListener((v, event) -> {
             final int DRAWABLE_END = 2;
             if (event.getAction() == MotionEvent.ACTION_UP) {
@@ -94,75 +94,140 @@ public class RegisterActivity extends AppCompatActivity {
 
         Button b = findViewById(R.id.regiter_btn);
         b.setOnClickListener(v -> {
-            String firstNameStr = firstName.getText().toString();
-            String surnameStr = surname.getText().toString();
-            String emailStr = email.getText().toString();
-            String phoneNumStr = phoneNum.getText().toString();
+            String firstNameStr = firstName.getText().toString().trim();
+            String surnameStr = surname.getText().toString().trim();
+            String emailStr = email.getText().toString().trim();
+            String phoneNumStr = phoneNum.getText().toString().trim();
             String passwordStr = passwordEditText.getText().toString();
             String confirmPasswordStr = checkPassword.getText().toString();
 
-            if (fieldsAreEmpty()) {
-                Toast.makeText(this, "Please fill in all required fields", Toast.LENGTH_SHORT).show();
+            if (!validateFields()) {
                 return;
             }
 
+            // Format phone number with dashes
+            String formattedPhone = formatPhoneNumber(phoneNumStr);
+
             if (passwordStr.equals(confirmPasswordStr)) {
                 boolean isStaffMember = emailStr.charAt(0) != 's';
-                registerUser(firstNameStr, surnameStr, emailStr, passwordStr, phoneNumStr, isStaffMember);
+                registerUser(firstNameStr, surnameStr, emailStr, passwordStr, formattedPhone, isStaffMember);
             } else {
                 Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show();
+                password_star.setVisibility(View.VISIBLE);
+                confirm_password_star.setVisibility(View.VISIBLE);
             }
         });
     }
 
-    private boolean fieldsAreEmpty() {
-        boolean isEmpty = false;
+    private String formatPhoneNumber(String phone) {
+        if (phone.length() == 10) {
+            return phone.substring(0, 3) + "-" +
+                    phone.substring(3, 6) + "-" +
+                    phone.substring(6);
+        }
+        return phone;
+    }
 
-        if (firstName.getText().toString().trim().isEmpty()) {
+    private boolean validateFields() {
+        boolean allFieldsFilled = true;
+        String firstNameStr = firstName.getText().toString().trim();
+        String surnameStr = surname.getText().toString().trim();
+        String emailStr = email.getText().toString().trim();
+        String phoneNumStr = phoneNum.getText().toString().trim();
+        String passwordStr = passwordEditText.getText().toString();
+        String confirmPasswordStr = checkPassword.getText().toString();
+
+        // First check if all fields are filled
+        if (firstNameStr.isEmpty()) {
             first_name_star.setVisibility(View.VISIBLE);
-            isEmpty = true;
+            allFieldsFilled = false;
         } else {
             first_name_star.setVisibility(View.GONE);
         }
 
-        if (surname.getText().toString().trim().isEmpty()) {
+        if (surnameStr.isEmpty()) {
             surname_star.setVisibility(View.VISIBLE);
-            isEmpty = true;
+            allFieldsFilled = false;
         } else {
             surname_star.setVisibility(View.GONE);
         }
 
-        if (email.getText().toString().trim().isEmpty()) {
+        if (emailStr.isEmpty()) {
             email_star.setVisibility(View.VISIBLE);
-            isEmpty = true;
+            allFieldsFilled = false;
         } else {
             email_star.setVisibility(View.GONE);
         }
 
-        if (phoneNum.getText().toString().trim().isEmpty()) {
+        if (phoneNumStr.isEmpty()) {
             phone_star.setVisibility(View.VISIBLE);
-            isEmpty = true;
+            allFieldsFilled = false;
         } else {
             phone_star.setVisibility(View.GONE);
         }
 
-        if (passwordEditText.getText().toString().trim().isEmpty()) {
+        if (passwordStr.isEmpty()) {
             password_star.setVisibility(View.VISIBLE);
-            isEmpty = true;
+            allFieldsFilled = false;
         } else {
             password_star.setVisibility(View.GONE);
         }
 
-        if (checkPassword.getText().toString().trim().isEmpty()) {
+        if (confirmPasswordStr.isEmpty()) {
             confirm_password_star.setVisibility(View.VISIBLE);
-            isEmpty = true;
+            allFieldsFilled = false;
         } else {
             confirm_password_star.setVisibility(View.GONE);
         }
 
-        return isEmpty;
+        // If any field is empty, show the message and return false
+        if (!allFieldsFilled) {
+            Toast.makeText(this, "All fields must be completed", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        // If all fields are filled, proceed with other validations
+        boolean isValid = true;
+
+        // First Name validation
+        if (firstNameStr.length() > 11) {
+            first_name_star.setVisibility(View.VISIBLE);
+            Toast.makeText(this, "First name must be between 1 and 11 characters", Toast.LENGTH_SHORT).show();
+            isValid = false;
+        }
+
+        // Surname validation
+        if (surnameStr.length() > 11) {
+            surname_star.setVisibility(View.VISIBLE);
+            Toast.makeText(this, "Surname must be between 1 and 11 characters", Toast.LENGTH_SHORT).show();
+            isValid = false;
+        }
+
+        // Email validation
+        if (!emailStr.endsWith("@mandela.ac.za")) {
+            email_star.setVisibility(View.VISIBLE);
+            Toast.makeText(this, "Email must end with @mandela.ac.za", Toast.LENGTH_SHORT).show();
+            isValid = false;
+        }
+
+        // Phone number validation
+        if (phoneNumStr.length() != 10 || !phoneNumStr.matches("\\d+")) {
+            phone_star.setVisibility(View.VISIBLE);
+            Toast.makeText(this, "Phone number must be exactly 10 digits", Toast.LENGTH_SHORT).show();
+            isValid = false;
+        }
+
+        // Password validation
+        if (passwordStr.length() < 8) {
+            password_star.setVisibility(View.VISIBLE);
+            Toast.makeText(this, "Password must be at least 8 characters long", Toast.LENGTH_SHORT).show();
+            isValid = false;
+        }
+
+        return isValid;
     }
 
+    // Other methods remain the same
     private void togglePasswordVisibility(EditText editText, boolean isPasswordVisible) {
         if (isPasswordVisible) {
             editText.setTransformationMethod(PasswordTransformationMethod.getInstance());

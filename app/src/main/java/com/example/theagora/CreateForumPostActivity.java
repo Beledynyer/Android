@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.InputFilter;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,11 +38,13 @@ import retrofit2.Response;
 
 public class CreateForumPostActivity extends AppCompatActivity {
 
+    private static final int MAX_TITLE_LENGTH = 17;
     TextView titleStar;
     TextView contextStar;
     TextView tagsStar;
     ImageView im;
     Spinner tagsSpinner;
+    EditText titleEditText;
     private static final int REQUEST_PERMISSIONS_CODE = 100;
     User user;
     String imageByteArray;
@@ -68,6 +71,26 @@ public class CreateForumPostActivity extends AppCompatActivity {
         tagsStar = findViewById(R.id.Tags_star);
         im = findViewById(R.id.imageView);
 
+        // Set up title EditText with character limit
+        titleEditText = findViewById(R.id.title_editText);
+        titleEditText.setFilters(new InputFilter[] {
+                new InputFilter.LengthFilter(MAX_TITLE_LENGTH)
+        });
+
+        // Add TextWatcher to show remaining characters
+        titleEditText.addTextChangedListener(new android.text.TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                titleEditText.setHint("Enter title here");
+            }
+
+            @Override
+            public void afterTextChanged(android.text.Editable s) {}
+        });
+
         // Initially hide the stars
         titleStar.setVisibility(View.GONE);
         contextStar.setVisibility(View.GONE);
@@ -77,8 +100,8 @@ public class CreateForumPostActivity extends AppCompatActivity {
         user = userIntent.getParcelableExtra("user");
 
         forumPostService = RetrofitClientInstance.getRetrofitInstance().create(ForumPostService.class);
-
     }
+
 
     public void addImage(View v) {
         im.setImageBitmap(null);
@@ -130,15 +153,19 @@ public class CreateForumPostActivity extends AppCompatActivity {
         }
     }
     public void submitPost(View v) {
-        String title = ((EditText) findViewById(R.id.title_editText)).getText().toString().trim();
+        String title = titleEditText.getText().toString().trim();
         String content = ((EditText) findViewById(R.id.content_editText)).getText().toString().trim();
         String tags = tagsSpinner.getSelectedItem().toString().trim();
 
         boolean isValid = true;
 
-        // Check if title is empty
+        // Check if title is empty or too long
         if (title.isEmpty()) {
             titleStar.setVisibility(View.VISIBLE);
+            isValid = false;
+        } else if (title.length() > MAX_TITLE_LENGTH) {
+            titleStar.setVisibility(View.VISIBLE);
+            Toast.makeText(this, "Title must be " + MAX_TITLE_LENGTH + " characters or less", Toast.LENGTH_SHORT).show();
             isValid = false;
         } else {
             titleStar.setVisibility(View.GONE);
@@ -205,7 +232,7 @@ public class CreateForumPostActivity extends AppCompatActivity {
             // Show the dialog
             dialog.show();
         } else {
-            Toast.makeText(this, "Please fill in all the required fields", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please fill in all the required fields correctly", Toast.LENGTH_SHORT).show();
         }
     }
     @SuppressLint("SetTextI18n")
