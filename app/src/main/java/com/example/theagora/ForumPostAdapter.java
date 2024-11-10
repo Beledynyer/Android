@@ -70,16 +70,20 @@ public class ForumPostAdapter extends RecyclerView.Adapter<ForumPostAdapter.MyVi
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         ForumPost forumPost = filteredPosts.get(position);
         User forumPostUser = forumPost.getUser();
-        if (forumPostUser != null) {
-            if(forumPostUser.getId() == user.getId() || !forumPost.getTags().equals("Anonymous")){
-                holder.name.setText(forumPostUser.getfName() + " " + forumPostUser.getlName());
-            }
+
+        // Check if post is anonymous and doesn't belong to current user
+        if (forumPost.getTags().equals("Anonymous") && (forumPostUser == null || forumPostUser.getId() != user.getId())) {
+            holder.name.setText("####");
+        } else if (forumPostUser != null) {
+            holder.name.setText(forumPostUser.getfName() + " " + forumPostUser.getlName());
         } else {
             holder.name.setText("Unknown User");
         }
+
         holder.title.setText(forumPost.getTitle());
         holder.tags.setText(forumPost.getTags());
 
+        // Only show delete button if post belongs to current user
         if (forumPostUser != null && forumPostUser.getId() == user.getId()) {
             holder.bin.setVisibility(View.VISIBLE);
         } else {
