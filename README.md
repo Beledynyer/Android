@@ -1,6 +1,6 @@
 This was my Third year group project "The Agora" 
 
-1	SYSTEM OVERVIEW
+SYSTEM OVERVIEW
 1.1	Problem Description 
 The current system of disseminating information through university memos and portals has proven to be ineffective and inefficient for students and staff. Weekly memos posted on the student portals and sent via email are often cumbersome to sift through, making it difficult for individuals to find events such as seminars, concerts, or workshops that they would be interested in attending. Even after finding an event, students and staff members must set their own reminders, adding to the complexity of managing their schedules.
 Additionally, while the student portal contains a section where students can post and view adverts, this feature is not widely known among the student community. As a result, students often resort to posting physical posters on campus to promote their events or services, further cluttering the campus environment.
