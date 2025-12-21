@@ -24,3 +24,17 @@ The Forum platform will be implemented on android and Announcements and Market L
 To sign out of the system, users can simply click on their profile or tap it if using an Android device, to access the logout page and proceed with logging out.
 
 I handled the Forum Post part on Android.
+
+<img width="216" height="468" alt="final1" src="https://github.com/user-attachments/assets/82cbe8ed-12ec-425e-93b7-35173a3afde0"/> 
+&nbsp;&nbsp;&nbsp;&nbsp;
+<img width="216" height="468" alt="2" src="https://github.com/user-attachments/assets/0da161fa-d9fa-4b8f-bf94-851b6a9052a8" />
+&nbsp;&nbsp;&nbsp;&nbsp;
+<img width="216" height="468" alt="3" src="https://github.com/user-attachments/assets/82cc2457-2848-445b-a2f7-b747b679e3f8" />
+&nbsp;&nbsp;&nbsp;&nbsp;
+<img width="216" height="468" alt="4" src="https://github.com/user-attachments/assets/27505fd2-117d-4889-b98e-d987ea764055" />
+&nbsp;&nbsp;&nbsp;&nbsp;
+<img width="216" height="468" alt="7" src="https://github.com/user-attachments/assets/76a858bc-b423-477b-bc72-0e121c2bf606" />
+&nbsp;&nbsp;&nbsp;&nbsp;
+<img width="216" height="468" alt="a500" src="https://github.com/user-attachments/assets/116a5a13-ea56-41ee-a435-7f805b9a4a96" />
+&nbsp;&nbsp;&nbsp;&nbsp;
+<img width="1440" height="3120" alt="log_out" src="https://github.com/user-attachments/assets/3cea055f-5e6c-4f03-b5eb-7dd4673e98fe" />
