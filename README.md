@@ -37,4 +37,4 @@ I handled the Forum Post part on Android.
 &nbsp;&nbsp;&nbsp;&nbsp;
 <img width="216" height="468" alt="a500" src="https://github.com/user-attachments/assets/116a5a13-ea56-41ee-a435-7f805b9a4a96" />
 &nbsp;&nbsp;&nbsp;&nbsp;
-<img width="1440" height="3120" alt="log_out" src="https://github.com/user-attachments/assets/3cea055f-5e6c-4f03-b5eb-7dd4673e98fe" />
+<img width="216" height="468" alt="log_out" src="https://github.com/user-attachments/assets/3cea055f-5e6c-4f03-b5eb-7dd4673e98fe" />
